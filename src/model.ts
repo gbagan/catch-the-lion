@@ -19,6 +19,7 @@ export type State = {
   config: Config,
   turn: 0 | 1,
   outcome: 0 | 1 | null,
+  isThinking: boolean,
   played: Piece[][],
   dialogOpened: boolean,
 }
@@ -44,6 +45,7 @@ export const initState: () => State = () => ({
   outcome: null,
   played: [],
   config: newConfig(),
+  isThinking: false,
   dialogOpened: false,
 })
 
@@ -63,7 +65,7 @@ export function possibleMoves(pieces: Piece[], piece: Piece): number[] {
     if(piece2.position !== null) {
       board[piece2.position] = piece2.owner + 1;
     }
-  } 
+  }
 
   if (piece.position === null) {
     const res = [];

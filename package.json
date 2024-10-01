@@ -11,6 +11,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/lodash.maxby": "^4.6.9",
     "@types/lodash.range": "^3.2.9",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
@@ -20,6 +21,9 @@
     "vite-plugin-solid": "^2.8.2"
   },
   "dependencies": {
+    "@types/lodash.minby": "^4.6.9",
+    "lodash.maxby": "^4.6.0",
+    "lodash.minby": "^4.6.0",
     "lodash.range": "^3.2.0",
     "solid-js": "^1.9.1",
     "solid-transition-group": "^0.2.3"

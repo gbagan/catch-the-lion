@@ -4,6 +4,8 @@ import Board from './components/Board';
 import Info from './components/Info';
 import { Config, initPieces, initState } from './model';
 import NewGame from './components/NewGame';
+import { delay } from './util';
+import { level1AI } from './ai';
 
 const App: Component = () => {
   let newGameDialog!: HTMLDialogElement;
@@ -11,8 +13,8 @@ const App: Component = () => {
   const [state, setState] = createStore(initState());
 
   const playAux = (from: number, to: number) => {
-    const owner = state.pieces[from].owner;
-    const type = state.pieces[from].type;
+    const {owner, type, position} = state.pieces[from];
+
     batch(() => {
       const piecesCopy = state.pieces.map(piece => ({...piece}));
       setState("played", state.played.length, piecesCopy);
@@ -25,15 +27,32 @@ const App: Component = () => {
         }
       }
       setState("pieces", from, "position", to);
-      if (type === 'C' && (owner && to > 8 || !owner && to < 3)) {
+      if (type === 'C' && position !== null && (owner && to > 8 || !owner && to < 3)) {
         setState("pieces", from, "type", 'H');
       }
       setState("turn", turn => turn === 0 ? 1 : 0);
     });
   }
 
-  const play = (from: number, to: number) => {
-    playAux(from, to);
+  const play = async (from: number, to: number) => {
+    if (state.config.adversary === 'human') {
+      playAux(from, to);
+    } else {
+      batch(() => {
+        playAux(from, to);
+        if (state.outcome === null) {
+          setState("isThinking", true);
+        }
+      });
+      if (state.outcome !== null)
+        return
+      await delay(1500);
+      const [from2, to2] = level1AI(state.pieces, state.turn);
+      batch(() => {
+        setState("isThinking", false);
+        playAux(from2, to2);
+      });
+    }
   }
 
   const undo = () => {
