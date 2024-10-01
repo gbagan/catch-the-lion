@@ -8,12 +8,24 @@ export type Piece = {
   owner: Owner,
 }
 
+export type Adversary = "human" | "level1" | "level2" | "level3";
+
+export type Config = {
+  adversary: Adversary,
+}
+
 export type State = {
   pieces: Piece[],
+  config: Config,
   turn: 0 | 1,
   outcome: 0 | 1 | null,
   played: Piece[][],
+  dialogOpened: boolean,
 }
+
+export const newConfig: () => Config = () => ({
+  adversary: "human",
+});
 
 export const initPieces: () => Piece[] = () => [
   { type: 'E', position: 9, owner: 0 },
@@ -31,6 +43,8 @@ export const initState: () => State = () => ({
   turn: 0,
   outcome: null,
   played: [],
+  config: newConfig(),
+  dialogOpened: false,
 })
 
 

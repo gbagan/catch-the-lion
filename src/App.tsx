@@ -2,7 +2,8 @@ import { batch, Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
 import Board from './components/Board';
 import Info from './components/Info';
-import { initState } from './model';
+import { Config, initPieces, initState } from './model';
+import NewGame from './components/NewGame';
 
 const App: Component = () => {
   let newGameDialog!: HTMLDialogElement;
@@ -46,14 +47,38 @@ const App: Component = () => {
     }));
   }
 
+  const openNewGameDialog = () => {
+    setState("dialogOpened", true);
+    newGameDialog.showModal();
+  }
+
+  const closeNewGameDialog = () => {
+    newGameDialog.close();
+    setState("dialogOpened", false);
+  }
+
+  const newGame = (config: Config) => {
+    setState(produce(state => {
+      state.config = { ...config };
+      state.pieces = initPieces();
+      state.played = [];
+      state.outcome = null;
+      state.turn = 0;
+      //state.isThinking = false;
+      state.dialogOpened = false;
+    }))
+    newGameDialog.close();
+  }
+
   return (
     <>
       <div class="relative w-screen min-h-screen bg-main bg-cover bg-no-repeat flex flew-row items-center justify-around portrait:flex-col">
         <div class="absolute bg-white w-full h-full opacity-30 z-10 pointer-events-none"/>
         <div class="flex flex-col bg-board b-cover p-6 border-2 border-black rounded-xl gap-4 z-20">
           <div class="text-4xl">Catch the lion</div>
-          <button class="btn">Nouvelle partie</button>
+          <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
           <button class="btn" onClick={undo}>Annuler</button>
+          <button class="btn">Tutoriel</button>
           <button class="btn">Information</button>
         </div>
         <Board
@@ -70,6 +95,13 @@ const App: Component = () => {
         class="dialog"
         ref={newGameDialog}
       >
+        {state.dialogOpened && 
+          <NewGame
+            config={state.config}
+            closeDialog={closeNewGameDialog}
+            newGame={newGame}
+          />
+        }
       </dialog>
     </>
   )
