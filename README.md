@@ -1,3 +1,3 @@
-# Gomoku
+# Catch the lion
 
-https://gbagan.github.io/gomoku/
+https://gbagan.github.io/catch-the-lion/
