@@ -150,7 +150,9 @@ export function level1AI(pieces: Piece[], turn: 0 | 1): [number, number] {
   }
 
   // if the machine lion is attacked
-  const advAttackLion = turn ? advAttacks[1] : advAttacks[5];
+  const lion = turn ? 5 : 1;
+  const lionPosition = pieces[lion].position!;
+  const advAttackLion = advAttacks[lionPosition];
   if (advAttackLion.length > 0) {
     const attacker = advAttackLion[0];
     const attackerPosition = pieces[attacker].position!;
@@ -164,14 +166,13 @@ export function level1AI(pieces: Piece[], turn: 0 | 1): [number, number] {
       const safeMoves = kingMoves.filter(i => advAttacks[i].length === 0);
       if (safeMoves.length > 0) {
         console.log("move the lion");
-        const lion = turn ? 5 : 1;
         return [lion, sample(safeMoves)!];
       } else if (defenders.length > 0) {
         console.log("protect the lion with a unfavourable move");
         const minDefender = minBy(defenders, i => pieceValue[pieces[i].type])!;
         return [minDefender, attackerPosition];
       }
-      console.log("don't protect the lion");
+      console.log("don't protect the lion", attacks, advAttacks, attackerPosition);
       return sample(possibleMoves)!;
     }
   }

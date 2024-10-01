@@ -25,7 +25,7 @@ export type State = {
 }
 
 export const newConfig: () => Config = () => ({
-  adversary: "human",
+  adversary: "level1",
 });
 
 export const initPieces: () => Piece[] = () => [
