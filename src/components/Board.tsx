@@ -17,16 +17,16 @@ const pieceImages: Record<PieceType, string> = {
   L: "./lion.webp",
   G: "./giraffe.webp",
   E: "./elephant.webp",
-  c: "./chick.webp",
-  C: "./chicken.webp",
+  C: "./chick.webp",
+  H: "./chicken.webp",
 }
 
 const pieceIndex: Record<PieceType, number> = {
-  c: 0,
+  C: 0,
   E: 1,
   G: 2,
   L: 3,
-  C: 4,
+  H: 4,
 }
 
 const transformPiece = (piece: Piece) => {

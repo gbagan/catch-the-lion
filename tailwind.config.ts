@@ -24,27 +24,11 @@ export default {
       },
       animation: {
         'flip-y': 'flip-y 500ms linear forwards',
-        'peg': 'peg 1s ease-in-out infinite',
-        'threat': 'threat 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         "flip-y": {
           '0%': { opacity: '0', transform: 'rotateY(180deg)' },
           '100%': { opacity: '1', transform: 'rotateY(0)' },
-        },
-        peg: {
-          '0%, 100%': {
-            transform: 'translateY(0)',
-            filter: 'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.7))',
-          },
-          '50%': {
-            transform: 'translateY(-10px)',
-            filter: 'drop-shadow(0 10px 8px rgba(0, 0, 0, 0.7))',
-          }
-        },
-        threat: {
-          '0%, 100%': {opacity: '0.7'},
-          '50%': {opacity: '0.35'},
         }
       }
     }

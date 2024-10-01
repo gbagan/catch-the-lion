@@ -1,4 +1,4 @@
-export type PieceType = 'L' | 'G' | 'c' | 'E' | 'C';
+export type PieceType = 'L' | 'G' | 'C' | 'E' | 'H';
 type Position = number | null;
 type Owner = 0 | 1;
 
@@ -18,11 +18,11 @@ export const initPieces: () => Piece[] = () => [
   { type: 'E', position: 9, owner: 0 },
   { type: 'L', position: 10, owner: 0 },
   { type: 'G', position: 11, owner: 0 },
-  { type: 'c', position: 7, owner: 0 },
+  { type: 'C', position: 7, owner: 0 },
   { type: 'E', position: 2, owner: 1 },
   { type: 'L', position: 1, owner: 1 },
   { type: 'G', position: 0, owner: 1 },
-  { type: 'c', position: 4, owner: 1 },
+  { type: 'C', position: 4, owner: 1 },
 ]
 
 export const initState: () => State = () => ({
@@ -33,8 +33,8 @@ export const initState: () => State = () => ({
 
 
 export const movesDict: Record<PieceType, [number, number][]> = {
-  c: [[0, 1]],
-  C: [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1]],
+  C: [[0, 1]],
+  H: [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1]],
   G: [[0, 1], [1, 0], [0, -1], [-1, 0]],
   E: [[1, 1], [-1, 1], [1, -1], [-1, -1]],
   L: [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]]
@@ -47,8 +47,7 @@ export function possibleMoves(pieces: Piece[], piece: Piece): number[] {
     if(piece2.position !== null) {
       board[piece2.position] = piece2.owner + 1;
     }
-  }
-  
+  } 
 
   if (piece.position === null) {
     const res = [];
