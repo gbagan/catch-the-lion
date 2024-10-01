@@ -12,6 +12,7 @@ export type State = {
   pieces: Piece[],
   turn: 0 | 1,
   outcome: 0 | 1 | null,
+  played: Piece[][],
 }
 
 export const initPieces: () => Piece[] = () => [
@@ -29,6 +30,7 @@ export const initState: () => State = () => ({
   pieces: initPieces(),
   turn: 0,
   outcome: null,
+  played: [],
 })
 
 
