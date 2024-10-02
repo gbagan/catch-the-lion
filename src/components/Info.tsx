@@ -1,4 +1,4 @@
-import { Component, createMemo, createSignal, onMount } from "solid-js";
+import { Component, createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import { Transition } from "solid-transition-group";
 import { Adversary } from "../model";
 import { delay } from "../util";
@@ -19,7 +19,8 @@ type InfoComponent = Component<{
 
 const Info: InfoComponent = props => {
   const [periodicMessage, setPeriodicMessage] = createSignal<string | null>("");
-  
+  let stop = false;
+
   onMount(async () => {
     let i = 0;
     while (true) {
@@ -28,9 +29,15 @@ const Info: InfoComponent = props => {
       await delay(d);
       setPeriodicMessage(null);
       i = (i + 1) % messages.length;
-      await delay(2000);
+      if (stop)
+        break;
+      await delay(1500);
     }
-  })
+  });
+
+  onCleanup(() => {
+    stop = true;
+  });
 
   const message = createMemo(() => 
     props.outcome !== null
@@ -55,7 +62,7 @@ const Info: InfoComponent = props => {
   )
 
   return (
-    <div class={`relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`}>
+    <div class={`z-20 relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`}>
       <Transition
         onEnter={(el, done) => {
           const a = el.animate([

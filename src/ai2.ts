@@ -8,6 +8,7 @@ const pieceValue: Record<PieceType, number> = {
   C: 1,
 }
 
+/*
 const mobilityWeight: Record<PieceType, number> = {
   L: 0.5,
   H: 0.1,
@@ -15,6 +16,7 @@ const mobilityWeight: Record<PieceType, number> = {
   E: 0.3,
   C: 0.4,
 }
+*/
 
 function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][] {
   const result: [number, number][] = [];
@@ -92,13 +94,7 @@ function evaluatePosition(pieces: Piece[]): number {
   for (let i = 0; i < 8; i++) {
     const piece = pieces[i];
 
-    if (piece.position === null) {
-      for (let j = 0; j < 12; j++) {
-        if (!board[j]) {
-          result += (piece.owner ? -1 : 1) * mobilityWeight[piece.type];
-        }
-      }
-    } else {
+    if (piece.position !== null) {
       const x = piece.position % 3;
       const y = piece.position / 3 | 0;
       const moves = movesDict[piece.type];
@@ -109,7 +105,7 @@ function evaluatePosition(pieces: Piece[]): number {
         if (x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4) {
           let index = 3 * y2 + x2;
           if (board[index] !== piece.owner + 1) {
-            result += (piece.owner ? -1 : 1) * mobilityWeight[piece.type];
+            result += 0.1 * (piece.owner ? -1 : 1) // mobilityWeight[piece.type];
           }
         }
       }
