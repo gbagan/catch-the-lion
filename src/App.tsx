@@ -5,8 +5,6 @@ import Info from './components/Info';
 import { Config, initPieces, initState } from './model';
 import NewGame from './components/NewGame';
 import { delay } from './util';
-import { level1AI } from './ai';
-import { alphabeta } from './ai2';
 import Worker from './worker?worker';
 
 const App: Component = () => {

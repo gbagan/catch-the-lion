@@ -127,9 +127,9 @@ export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: numbe
     score = evaluatePosition(pieces);
     return [score, bestMove];
   } else if (pieces[1].position === null) {
-    return [-Infinity, bestMove];
+    return [-100000-depth, bestMove];
   } else if (pieces[5].position === null) {
-    return [Infinity, bestMove];
+    return [100000+depth, bestMove];
   }
   
   else {
