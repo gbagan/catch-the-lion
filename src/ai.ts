@@ -182,7 +182,6 @@ export function level1AI(pieces: Piece[], turn: 0 | 1): [number, number] {
   if (exchanges.length > 0) {
     const bestExchange = maxBy(exchanges, e => e[1])![0];
     const minAttacker = minBy(attacks[bestExchange], i => pieceValue[pieces[i].type])!;
-    console.log(exchanges, bestExchange, minAttacker);
     return [minAttacker, bestExchange];
   }
 
