@@ -9,6 +9,7 @@ const messages: [string, number][] = [
 
 type InfoComponent = Component<{
   outcome: null | 0 | 1,
+  isThinking: boolean,
 }>
 
 const Info: InfoComponent = props => {
@@ -20,6 +21,8 @@ const Info: InfoComponent = props => {
   const girlExpression = createMemo(() =>
     props.outcome !== null
     ? "bg-happy"
+    : props.isThinking
+    ? "bg-thinking"
     : "bg-speaking"
   )
 

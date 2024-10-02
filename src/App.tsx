@@ -7,11 +7,23 @@ import NewGame from './components/NewGame';
 import { delay } from './util';
 import { level1AI } from './ai';
 import { alphabeta } from './ai2';
+import Worker from './worker?worker';
 
 const App: Component = () => {
   let newGameDialog!: HTMLDialogElement;
 
   const [state, setState] = createStore(initState());
+
+  const worker = new Worker();
+
+  function workerTask(data: any): Promise<[number, number]> {
+    return new Promise(resolve => {
+      worker.onmessage = function(e) {
+        resolve(e.data);
+      };
+      worker.postMessage(data);
+    });
+  }
 
   const playAux = (from: number, to: number) => {
     const {owner, type, position} = state.pieces[from];
@@ -47,17 +59,16 @@ const App: Component = () => {
       });
       if (state.outcome !== null)
         return
-      await delay(1500);
-      const [from2, to2] =
-        state.config.adversary === 'level1'
-        ? level1AI(state.pieces, state.turn)
-        : state.config.adversary === 'level2'
-        ? alphabeta(4, state.turn, -Infinity, +Infinity, state.pieces.map(p => ({...p})))[1]
-        : alphabeta(8, state.turn, -Infinity, +Infinity, state.pieces.map(p => ({...p})))[1]
+      const data = {
+        pieces: state.pieces.map(p => ({...p})),
+        turn: state.turn,
+        adversary: state.config.adversary
+      };
+      const [[from2, to2]] = await Promise.all([workerTask(data), delay(1500)]);
       batch(() => {
         setState("isThinking", false);
         playAux(from2, to2);
-      });
+      })
     }
   }
 
@@ -114,6 +125,7 @@ const App: Component = () => {
         />
         <Info
           outcome={state.outcome}
+          isThinking={state.isThinking}
         />
       </div>
       <dialog
