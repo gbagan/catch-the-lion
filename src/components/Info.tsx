@@ -1,28 +1,55 @@
 import { Component, createMemo, createSignal, onMount } from "solid-js";
 import { Transition } from "solid-transition-group";
+import { Adversary } from "../model";
+import { delay } from "../util";
 
 const messages: [string, number][] = [
-  ["Bienvenue sur l'appli Gomoku", 4000],
-  ["Gomoku connu aussi sous le nom de Darpion est un jeu positionnel japonais d'origine chinoise.", 5000],
-  ["Il existe de nombreuses variantes: Libre, Renju, Caro, Omok, Ninuki-renju", 5000]
+  ["Bienvenue sur l'appli Catch the lion", 3000],
+  ['"Catch the lion" connu en japonais sous le nom "Dobutsu Shogi" est une variante pour enfants du Shogi.', 5000],
+  ["Le jeu a été entièrement résolu par ordinateur. Il existe 1 567 925 964 configurations possibles.", 5000],
+  ["Pour apprendre les règles, tu peux clicker sur Tutoriel", 3000]
 ]
 
 type InfoComponent = Component<{
   outcome: null | 0 | 1,
+  adversary: Adversary,
   isThinking: boolean,
 }>
 
 const Info: InfoComponent = props => {
+  const [periodicMessage, setPeriodicMessage] = createSignal<string | null>("");
+  
+  onMount(async () => {
+    let i = 0;
+    while (true) {
+      const d = messages[i][1];
+      setPeriodicMessage(messages[i][0]);
+      await delay(d);
+      setPeriodicMessage(null);
+      i = (i + 1) % messages.length;
+      await delay(2000);
+    }
+  })
+
   const message = createMemo(() => 
     props.outcome !== null
-      ? `Bravo! Le joueur ${props.outcome + 1} a gagné!`
-      : "Bienvenue sur l'appli");
+      ? (
+          props.adversary === 'human' 
+          ? `Bravo! Le joueur ${props.outcome + 1} a gagné!`
+          : props.outcome === 0
+          ? `Zut! J'ai perdu! Tu peux changer de difficulté en clickant sur nouvelle partie!`
+          : `Oh oui! J'ai gagné! Tu peux changer de difficulté en clickant sur nouvelle partie!`
+        )
+      : periodicMessage()
+  );
 
   const girlExpression = createMemo(() =>
-    props.outcome !== null
-    ? "bg-happy"
-    : props.isThinking
+    props.isThinking
     ? "bg-thinking"
+    : props.outcome !== null && props.outcome === 0 && props.adversary !== 'human'
+    ? "bg-crying"
+    : props.outcome !== null && (props.outcome === 1 || props.adversary === 'human')
+    ? "bg-happy"
     : "bg-speaking"
   )
 

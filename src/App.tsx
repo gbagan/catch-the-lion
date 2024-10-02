@@ -132,6 +132,7 @@ const App: Component = () => {
         <Info
           outcome={state.outcome}
           isThinking={state.isThinking}
+          adversary={state.config.adversary}
         />
       </div>
       <dialog
