@@ -78,6 +78,11 @@ const App: Component = () => {
         state.turn = state.turn === 0 ? 1 : 0;
         state.outcome = null;
       }
+      if (state.played.length % 2 === 1 && state.config.adversary !== 'human') {
+        const pieces = state.played.pop()!;
+        state.pieces = pieces;
+        state.turn = state.turn === 0 ? 1 : 0;
+      }
     }));
   }
 
