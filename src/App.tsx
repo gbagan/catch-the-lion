@@ -45,6 +45,19 @@ const App: Component = () => {
     });
   }
 
+  const machinePlays = async () => {
+    const data = {
+      pieces: state.pieces.map(p => ({...p})),
+      turn: state.turn,
+      adversary: state.config.adversary
+    };
+    const [[from2, to2]] = await Promise.all([workerTask(data), delay(1500)]);
+    batch(() => {
+      setState("isThinking", false);
+      playAux(from2, to2);
+    })
+  } 
+
   const play = async (from: number, to: number) => {
     if (state.config.adversary === 'human') {
       playAux(from, to);
@@ -57,16 +70,7 @@ const App: Component = () => {
       });
       if (state.outcome !== null)
         return
-      const data = {
-        pieces: state.pieces.map(p => ({...p})),
-        turn: state.turn,
-        adversary: state.config.adversary
-      };
-      const [[from2, to2]] = await Promise.all([workerTask(data), delay(1500)]);
-      batch(() => {
-        setState("isThinking", false);
-        playAux(from2, to2);
-      })
+      await machinePlays();
     }
   }
 
@@ -75,13 +79,15 @@ const App: Component = () => {
       return
     
     setState(produce(state => {
-      if (state.played.length) {
+      if (state.played.length > 1) {
         const pieces = state.played.pop()!.pieces;
         state.pieces = pieces;
         state.turn = state.turn === 0 ? 1 : 0;
         state.outcome = null;
       }
-      if (state.played.length % 2 === 1 && state.config.adversary !== 'human') {
+      const parity = state.played.length % 2 === 0;
+
+      if (state.config.adversary !== 'human' && parity === state.config.machineStarts) {
         const pieces = state.played.pop()!.pieces;
         state.pieces = pieces;
         state.turn = state.turn === 0 ? 1 : 0;
@@ -105,11 +111,14 @@ const App: Component = () => {
       state.pieces = initPieces();
       state.played = [];
       state.outcome = null;
-      state.turn = 0;
-      //state.isThinking = false;
+      state.turn = state.config.machineStarts ? 1 : 0;
+      state.isThinking = state.config.machineStarts;
       state.dialogOpened = false;
     }))
     newGameDialog.close();
+    if (state.config.machineStarts) {
+      machinePlays();
+    }
   }
 
   return (

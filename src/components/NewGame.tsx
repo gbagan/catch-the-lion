@@ -31,11 +31,13 @@ const NewGame: NewGameComponent = props => {
         </div>
         <div class="text-bold text-lg">Qui commence</div>
         <div class="flex gap-4 text-lg">
-          {[0, 1].map(i =>
+          {[false, true].map(b =>
             <button
               class="togglebtn"
+              classList={{"toggledbtn": b === config.machineStarts}}
+              onClick={e => setConfig("machineStarts", b)}
             >
-              {i === 0 ? "Humain" : "Machine"}
+              {b ? "Machine" : "Humain"}
             </button>
           )}
         </div>

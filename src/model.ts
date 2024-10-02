@@ -12,6 +12,7 @@ export type Adversary = "human" | "level1" | "level2" | "level3";
 
 export type Config = {
   adversary: Adversary,
+  machineStarts: boolean,
 }
 
 export type State = {
@@ -26,6 +27,7 @@ export type State = {
 
 export const newConfig: () => Config = () => ({
   adversary: "level1",
+  machineStarts: false,
 });
 
 export const initPieces: () => Piece[] = () => [
