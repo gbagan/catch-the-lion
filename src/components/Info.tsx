@@ -7,6 +7,7 @@ const messages: [string, number][] = [
   ["Bienvenue sur l'appli Catch the lion", 3000],
   ['"Catch the lion" connu en japonais sous le nom "Dobutsu Shogi" est une variante pour enfants du Shogi.', 5000],
   ["Le jeu a été entièrement résolu par ordinateur. Il existe 1 567 925 964 configurations possibles.", 5000],
+  ["Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le second joueur.", 5000],
   ["Pour apprendre les règles, tu peux clicker sur Tutoriel", 3000]
 ]
 

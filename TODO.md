@@ -12,3 +12,4 @@
 - [x] Undo must go back 2 positions if playing against AI
 - [x] AI must search for the shortest checkmate
 - [x] Cannot play or undo when the machine is thinking
+- [x] Color the squates to display the last moves

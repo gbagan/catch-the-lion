@@ -4,7 +4,7 @@ import Board from './components/Board';
 import Info from './components/Info';
 import { Config, initPieces, initState } from './model';
 import NewGame from './components/NewGame';
-import { delay } from './util';
+import { delay, last } from './util';
 import Worker from './worker?worker';
 
 const App: Component = () => {
@@ -25,10 +25,10 @@ const App: Component = () => {
 
   const playAux = (from: number, to: number) => {
     const {owner, type, position} = state.pieces[from];
-
+    const fromPos = state.pieces[from].position; 
     batch(() => {
       const piecesCopy = state.pieces.map(piece => ({...piece}));
-      setState("played", state.played.length, piecesCopy);
+      setState("played", state.played.length, {pieces: piecesCopy, move: [fromPos, to]});
       let j = state.pieces.findIndex(piece => piece.position === to);
       if (j >= 0) {
         setState("pieces", j, { position: null, owner });
@@ -76,13 +76,13 @@ const App: Component = () => {
     
     setState(produce(state => {
       if (state.played.length) {
-        const pieces = state.played.pop()!;
+        const pieces = state.played.pop()!.pieces;
         state.pieces = pieces;
         state.turn = state.turn === 0 ? 1 : 0;
         state.outcome = null;
       }
       if (state.played.length % 2 === 1 && state.config.adversary !== 'human') {
-        const pieces = state.played.pop()!;
+        const pieces = state.played.pop()!.pieces;
         state.pieces = pieces;
         state.turn = state.turn === 0 ? 1 : 0;
       }
@@ -126,6 +126,7 @@ const App: Component = () => {
         <Board
           pieces={state.pieces}
           turn={state.turn}
+          lastMove={last(state.played)?.move ?? null}
           canPlay={!state.isThinking && state.outcome === null}
           play={play}
         />

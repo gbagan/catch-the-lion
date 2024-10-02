@@ -20,7 +20,7 @@ export type State = {
   turn: 0 | 1,
   outcome: 0 | 1 | null,
   isThinking: boolean,
-  played: Piece[][],
+  played: {pieces: Piece[], move: [number | null, number]}[],
   dialogOpened: boolean,
 }
 

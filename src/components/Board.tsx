@@ -58,15 +58,19 @@ const selectedPieceTransform = (pos: Position, piece: Piece) => {
 type BoardComponent = Component<{
   pieces: Piece[],
   turn: 0 | 1,
+  lastMove: [number | null, number] | null,
   canPlay: boolean,
   play: (from: number, to: number) => void,
 }>
 
 const Board: BoardComponent = props => {
   const [selectedPiece, setSelectedPiece] = createSignal<number | null>(null);
+  const [lastSelectedPiece, setLastSelectedPiece] = createSignal<number | null>(null);
   const [pointerPosition, setPointerPosition] = createSignal<Position | null>(null);
 
   const moves = createMemo(() => selectedPiece() !== null ? possibleMoves(props.pieces, props.pieces[selectedPiece()!]) : []);
+
+  const played = (i: number) => props.lastMove && props.lastMove.includes(i);
 
   const pointerDown = (pos: number, e: PointerEvent) => {
     if (!props.canPlay || props.pieces[pos].owner !== props.turn)
@@ -74,7 +78,11 @@ const Board: BoardComponent = props => {
     
     if (e.currentTarget)
       (e.currentTarget as Element).releasePointerCapture(e.pointerId);
-    setSelectedPiece(pos);
+    batch(() => {
+      setSelectedPiece(pos);
+      setLastSelectedPiece(pos);
+    });
+    setTimeout(() => setLastSelectedPiece(null), 500);
   }
 
   const pointerMove = (e: PointerEvent) => {
@@ -120,7 +128,7 @@ const Board: BoardComponent = props => {
               stroke-width="20"
               stroke={moves().includes(i()) ? "lightgreen" : "transparent"}
               classList={{"pointer-events-none": !moves().includes(i()) }}
-              fill="transparent"
+              fill={played(i()) ? "rgba(0, 255, 0, 0.3)" : "transparent"}
               onPointerUp={[pointerUp, i()]}
             />
           }
@@ -135,9 +143,11 @@ const Board: BoardComponent = props => {
               height="280"
               style={{transform: transformPiece(piece())}}
               href={pieceImages[piece().type]}
-              class="transition-transform duration-1000"
-              classList={{"pointer-events-none": selectedPiece() !== null}}
-              opacity={i === selectedPiece() ? 0 : 100}
+              classList={{
+                "pointer-events-none": selectedPiece() !== null,
+                "transition-transform duration-1000": lastSelectedPiece() !== i,
+                "opacity-0": i === selectedPiece()
+              }}
               onPointerDown={[pointerDown, i]}
             />
           }
