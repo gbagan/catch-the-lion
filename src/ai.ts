@@ -11,50 +11,6 @@ const pieceValue: Record<PieceType, number> = {
   C: 1,
 }
 
-/*
-function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][] {
-  const res: [number, number][] = [];
-  const board = new Array(12);
-  board.fill(0);
-  for (const piece2 of pieces) {
-    if (piece2.position !== null) {
-      board[piece2.position] = piece2.owner + 1;
-    }
-  }
-
-  for (let i = 0; i < 8; i++) {
-    const piece = pieces[i];
-    if (piece.owner !== turn)
-      continue;
-
-    if (piece.position === null) {
-      const res = [];
-      for (let j = 0; j < 12; j++) {
-        if (!board[j]) {
-          res.push([i, j]);
-        }
-      }
-    } else {
-      const x = piece.position % 3;
-      const y = piece.position / 3 | 0;
-      const moves = movesDict[piece.type];
-      for (const move of moves) {
-        const [dx, dy] = turn ? [move[0], move[1]] : [-move[0], -move[1]];
-        const x2 = x + dx;
-        const y2 = y + dy;
-        if (x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4) {
-          let index = 3 * y2 + x2;
-          if (board[index] !== piece.owner + 1) {
-            res.push([i, index]);
-          }
-        }
-      }
-    }
-  }
-  return res;
-}
-*/
-
 export function level1AI(pieces: Piece[], turn: 0 | 1): [number, number] {
   const kingMoves: number[] = [];
   const possibleMoves: [number, number][] = [];

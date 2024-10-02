@@ -6,6 +6,7 @@ import { Config, initPieces, initState } from './model';
 import NewGame from './components/NewGame';
 import { delay } from './util';
 import { level1AI } from './ai';
+import { alphabeta } from './ai2';
 
 const App: Component = () => {
   let newGameDialog!: HTMLDialogElement;
@@ -47,7 +48,12 @@ const App: Component = () => {
       if (state.outcome !== null)
         return
       await delay(1500);
-      const [from2, to2] = level1AI(state.pieces, state.turn);
+      const [from2, to2] =
+        state.config.adversary === 'level1'
+        ? level1AI(state.pieces, state.turn)
+        : state.config.adversary === 'level2'
+        ? alphabeta(4, state.turn, -Infinity, +Infinity, state.pieces.map(p => ({...p})))[1]
+        : alphabeta(8, state.turn, -Infinity, +Infinity, state.pieces.map(p => ({...p})))[1]
       batch(() => {
         setState("isThinking", false);
         playAux(from2, to2);
