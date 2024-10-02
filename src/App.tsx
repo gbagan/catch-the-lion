@@ -71,6 +71,9 @@ const App: Component = () => {
   }
 
   const undo = () => {
+    if (state.isThinking)
+      return
+    
     setState(produce(state => {
       if (state.played.length) {
         const pieces = state.played.pop()!;
@@ -123,7 +126,7 @@ const App: Component = () => {
         <Board
           pieces={state.pieces}
           turn={state.turn}
-          outcome={state.outcome}
+          canPlay={!state.isThinking && state.outcome === null}
           play={play}
         />
         <Info

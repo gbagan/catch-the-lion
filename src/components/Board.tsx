@@ -58,7 +58,7 @@ const selectedPieceTransform = (pos: Position, piece: Piece) => {
 type BoardComponent = Component<{
   pieces: Piece[],
   turn: 0 | 1,
-  outcome: null | 0 | 1,
+  canPlay: boolean,
   play: (from: number, to: number) => void,
 }>
 
@@ -69,7 +69,7 @@ const Board: BoardComponent = props => {
   const moves = createMemo(() => selectedPiece() !== null ? possibleMoves(props.pieces, props.pieces[selectedPiece()!]) : []);
 
   const pointerDown = (pos: number, e: PointerEvent) => {
-    if (props.outcome !== null || props.pieces[pos].owner !== props.turn)
+    if (!props.canPlay || props.pieces[pos].owner !== props.turn)
       return;
     
     if (e.currentTarget)
