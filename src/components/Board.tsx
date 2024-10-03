@@ -4,12 +4,6 @@ import range from "lodash.range";
 
 type Position = {x: number, y: number};
 
-function getPointerPosition(e: MouseEvent): Position {
-  const el = e.currentTarget as Element;
-  const { left, top, width, height } = el.getBoundingClientRect();
-  return { x: (e.clientX - left) / width, y: (e.clientY - top) / height };
-}
-
 const rows = [350, 670, 1000, 1320];
 const columns = [480, 800, 1120];
 
@@ -64,6 +58,8 @@ type BoardComponent = Component<{
 }>
 
 const Board: BoardComponent = props => {
+  let svgEl!: SVGSVGElement;
+  
   const [selectedPiece, setSelectedPiece] = createSignal<number | null>(null);
   const [lastSelectedPiece, setLastSelectedPiece] = createSignal<number | null>(null);
   const [pointerPosition, setPointerPosition] = createSignal<Position | null>(null);
@@ -71,6 +67,11 @@ const Board: BoardComponent = props => {
   const moves = createMemo(() => selectedPiece() !== null ? possibleMoves(props.pieces, props.pieces[selectedPiece()!]) : []);
 
   const played = (i: number) => props.lastMove && props.lastMove.includes(i);
+
+  function getPointerPosition(e: MouseEvent): Position {
+    const { left, top, width, height } = svgEl.getBoundingClientRect();
+    return { x: (e.clientX - left) / width, y: (e.clientY - top) / height };
+  }
 
   const ownBothPieces = (i: number, player: 0 | 1) =>
     props.pieces[i].owner === player
@@ -89,6 +90,7 @@ const Board: BoardComponent = props => {
     batch(() => {
       setSelectedPiece(pos);
       setLastSelectedPiece(pos);
+      setPointerPosition(getPointerPosition(e));
     });
     setTimeout(() => setLastSelectedPiece(null), 500);
   }
@@ -108,7 +110,7 @@ const Board: BoardComponent = props => {
     })
   }
 
-  const cancelMove = (e: PointerEvent) => {
+  const cancelMove = () => {
     batch(() => {
       setPointerPosition(null);
       setSelectedPiece(null);
@@ -120,6 +122,7 @@ const Board: BoardComponent = props => {
       <svg
         viewBox="0 0 1600 1680"
         class="select-none"
+        ref={svgEl}
         onPointerMove={pointerMove}
         onPointerCancel={cancelMove}
         onPointerLeave={cancelMove}
@@ -158,7 +161,7 @@ const Board: BoardComponent = props => {
               classList={{
                 "pointer-events-none": selectedPiece() !== null,
                 "transition-transform duration-1000": lastSelectedPiece() !== i,
-                "opacity-0": i === selectedPiece()
+                "opacity-0": i === selectedPiece() && pointerPosition() !== null
               }}
               onPointerDown={[pointerDown, i]}
             />

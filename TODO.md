@@ -9,7 +9,7 @@
 - [x] Does not trigger the piece animation when a human plays
 - [x] Displays when a player has captured twice the same piece
 - [x] If a chick is dropped on the last row, it is not transformed in hen
-- [ ] Bug: A piece disappears if someone clicks on it without moving the cursor
+- [x] Bug: A piece disappears if someone clicks on it without moving the cursor
 - [x] Undo must go back 2 positions if playing against AI
 - [x] AI must search for the shortest checkmate
 - [x] Cannot play or undo when the machine is thinking
