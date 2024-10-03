@@ -116,4 +116,15 @@ const piecesEq = (pieces1: Piece[], pieces2: Piece[]) => {
 }
 
 export const drawGame = (pieces: Piece[], played: Played) =>
-  countIf(played, p => piecesEq(pieces, p.pieces)) >= 2
+  countIf(played, p => piecesEq(pieces, p.pieces)) >= 2;
+
+export const condition2Win = (pieces: Piece[], turn: 0 | 1) => {
+  const lionPosition = pieces[turn ? 5 : 1].position;
+  if (lionPosition === null) {
+    return false;
+  }
+  return (turn && lionPosition > 8 || !turn && lionPosition < 3) 
+    && pieces.every(piece =>
+      piece.owner === turn || !possibleMoves(pieces, piece).includes(lionPosition)
+    );
+}

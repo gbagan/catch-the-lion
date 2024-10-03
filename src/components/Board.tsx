@@ -72,6 +72,14 @@ const Board: BoardComponent = props => {
 
   const played = (i: number) => props.lastMove && props.lastMove.includes(i);
 
+  const ownBothPieces = (i: number, player: 0 | 1) =>
+    props.pieces[i].owner === player
+    && props.pieces[i+4].owner === player
+    && props.pieces[i].position === null
+    && props.pieces[i+4].position === null
+    && selectedPiece() !== i
+    && selectedPiece() !== i + 4
+
   const pointerDown = (pos: number, e: PointerEvent) => {
     if (!props.canPlay || props.pieces[pos].owner !== props.turn)
       return;
@@ -117,6 +125,10 @@ const Board: BoardComponent = props => {
         onPointerLeave={cancelMove}
         onPointerUp={cancelMove}
       >
+        <symbol id="twice" viewBox="0 0 40 40">
+          <rect x="0" y="0" width="40" height="40" fill="red"/>
+          <text x="20" y="30" fill="white" font-size="30px" font-weight="bold" text-anchor="middle">2</text>
+        </symbol>
         <image x="200" y="0" width="1200" height="1680" href="./board.webp" />
         <Index each={range(0, 12)}>
           {i =>
@@ -150,6 +162,30 @@ const Board: BoardComponent = props => {
               }}
               onPointerDown={[pointerDown, i]}
             />
+          }
+        </Index>
+        <Index each={[3, 0, 2]}>
+          {(i, j) =>
+            <>
+              <use
+                href="#twice"
+                width="50"
+                height="50"
+                classList={{"opacity-0": !ownBothPieces(i(), 0)}}
+                style={{
+                  transform: `translate(140px, ${1610 - 200 * j}px)`,
+                }}
+              />
+              <use
+                href="#twice"
+                width="50"
+                height="50"
+                classList={{"opacity-0": !ownBothPieces(i(), 1)}}
+                style={{
+                  transform: `translate(1540px, ${240 + 200 * j}px)`,
+                }}
+              />
+            </>
           }
         </Index>
 

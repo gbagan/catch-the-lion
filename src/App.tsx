@@ -2,7 +2,7 @@ import { batch, Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
 import Board from './components/Board';
 import Info from './components/Info';
-import { Config, drawGame, initPieces, initState } from './model';
+import { condition2Win, Config, drawGame, initPieces, initState } from './model';
 import NewGame from './components/NewGame';
 import { delay, last } from './util';
 import Worker from './worker?worker';
@@ -46,10 +46,13 @@ const App: Component = () => {
       if (type === 'C' && position !== null && (owner && to > 8 || !owner && to < 3)) {
         setState("pieces", from, "type", 'H');
       }
-      setState("turn", turn => turn === 0 ? 1 : 0);
+      if (condition2Win(state.pieces, state.turn)) {
+        setState("outcome", state.turn);
+      }
       if (drawGame(state.pieces, state.played)) {
         setState("outcome", 2);
       }
+      setState("turn", turn => turn === 0 ? 1 : 0);
     });
   }
 

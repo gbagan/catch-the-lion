@@ -5,9 +5,9 @@
 - [ ] Implements a tutorial
 - [x] Implements an option in the New Game dialog such that the machine can start
 - [x] Implements the rule: it is draw if a position is repeated three times
-- [ ] Implements the rule: a player wins if the lion reaches the last row
+- [x] Implements the rule: a player wins if the lion reaches the last row
 - [x] Does not trigger the piece animation when a human plays
-- [ ] Displays when a player has captured twice the same piece
+- [x] Displays when a player has captured twice the same piece
 - [x] If a chick is dropped on the last row, it is not transformed in hen
 - [ ] Bug: A piece disappears if someone clicks on it without moving the cursor
 - [x] Undo must go back 2 positions if playing against AI

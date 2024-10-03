@@ -126,9 +126,11 @@ export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: numbe
     return [-100000-depth, bestMove];
   } else if (pieces[5].position === null) {
     return [100000+depth, bestMove];
-  }
-  
-  else {
+  } else if (turn && pieces[5].position > 8) {
+    return [-100000-depth, bestMove];
+  } else if (turn && pieces[1].position < 3) {
+    return [100000+depth, bestMove];
+  } else {
     for (let i = 0; i < moves.length; i++) {
       const move = moves[i];
       var newPieces = playMove(pieces, move);
