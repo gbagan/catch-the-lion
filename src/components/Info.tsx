@@ -12,7 +12,7 @@ const messages: [string, number][] = [
 ]
 
 type InfoComponent = Component<{
-  outcome: null | 0 | 1,
+  outcome: null | 0 | 1 | 2,
   adversary: Adversary,
   isThinking: boolean,
 }>
@@ -42,7 +42,9 @@ const Info: InfoComponent = props => {
   const message = createMemo(() => 
     props.outcome !== null
       ? (
-          props.adversary === 'human' 
+          props.outcome === 2
+          ? "Oh, cette configuration de pièces a été répétée 3 fois. C'est un match nul!"
+          : props.adversary === 'human' 
           ? `Bravo! Le joueur ${props.outcome + 1} a gagné!`
           : props.outcome === 0
           ? `Zut! J'ai perdu! Tu peux changer de difficulté en clickant sur nouvelle partie!`
@@ -54,6 +56,8 @@ const Info: InfoComponent = props => {
   const girlExpression = createMemo(() =>
     props.isThinking
     ? "bg-thinking"
+    : props.outcome === 2
+    ? "bg-surprised"
     : props.outcome !== null && props.outcome === 0 && props.adversary !== 'human'
     ? "bg-crying"
     : props.outcome !== null && (props.outcome === 1 || props.adversary === 'human')

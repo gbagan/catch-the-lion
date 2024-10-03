@@ -4,7 +4,7 @@
 - [x] Implements a smarter AI
 - [ ] Implements a tutorial
 - [x] Implements an option in the New Game dialog such that the machine can start
-- [ ] Implements the rule: it is draw if a position is repeated three times
+- [x] Implements the rule: it is draw if a position is repeated three times
 - [ ] Implements the rule: a player wins if the lion reaches the last row
 - [x] Does not trigger the piece animation when a human plays
 - [ ] Displays when a player has captured twice the same piece

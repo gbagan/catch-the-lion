@@ -1,3 +1,5 @@
+import { countIf } from "./util";
+
 export type PieceType = 'L' | 'G' | 'C' | 'E' | 'H';
 type Position = number | null;
 type Owner = 0 | 1;
@@ -15,13 +17,15 @@ export type Config = {
   machineStarts: boolean,
 }
 
+type Played = {pieces: Piece[], move: [number | null, number]}[];
+
 export type State = {
   pieces: Piece[],
   config: Config,
   turn: 0 | 1,
-  outcome: 0 | 1 | null,
+  outcome: 0 | 1 | 2 | null,
   isThinking: boolean,
-  played: {pieces: Piece[], move: [number | null, number]}[],
+  played: Played,
   dialogOpened: boolean,
 }
 
@@ -96,3 +100,20 @@ export function possibleMoves(pieces: Piece[], piece: Piece): number[] {
   }
   return res;
 }
+
+const pieceEq = (piece1: Piece, piece2: Piece) =>
+  piece1.owner === piece2.owner 
+  && piece1.position === piece2.position
+  && piece1.type === piece2.type
+
+const piecesEq = (pieces1: Piece[], pieces2: Piece[]) => {
+  for (let i = 0; i < 8; i++) {
+    if (!pieceEq(pieces1[i], pieces2[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export const drawGame = (pieces: Piece[], played: Played) =>
+  countIf(played, p => piecesEq(pieces, p.pieces)) >= 2

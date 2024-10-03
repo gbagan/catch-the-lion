@@ -2,7 +2,7 @@ import { batch, Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
 import Board from './components/Board';
 import Info from './components/Info';
-import { Config, initPieces, initState } from './model';
+import { Config, drawGame, initPieces, initState } from './model';
 import NewGame from './components/NewGame';
 import { delay, last } from './util';
 import Worker from './worker?worker';
@@ -47,6 +47,9 @@ const App: Component = () => {
         setState("pieces", from, "type", 'H');
       }
       setState("turn", turn => turn === 0 ? 1 : 0);
+      if (drawGame(state.pieces, state.played)) {
+        setState("outcome", 2);
+      }
     });
   }
 
