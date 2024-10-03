@@ -1,14 +1,16 @@
-import { Component, createMemo, createSignal, onCleanup, onMount } from "solid-js";
+import { Component, createMemo, createSignal, JSXElement, onCleanup, onMount } from "solid-js";
 import { Transition } from "solid-transition-group";
 import { Adversary } from "../model";
 import { delay } from "../util";
 
-const messages: [string, number][] = [
-  ["Bienvenue sur l'appli Catch the lion", 3000],
-  ['"Catch the lion" connu en japonais sous le nom "Dobutsu Shogi" est une variante pour enfants du Shogi.', 5000],
-  ["Le jeu a été entièrement résolu par ordinateur. Il existe 1 567 925 964 configurations possibles.", 5000],
-  ["Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le second joueur.", 5000],
-  ["Pour apprendre les règles, tu peux clicker sur Tutoriel", 3000]
+const emph = (msg: string) => <span class="text-green-500 font-bold">{msg}</span>
+
+const messages: [JSXElement, number][] = [
+  [<>Bienvenue sur l'appli {emph("Catch the lion")}</>, 3000],
+  [<>{emph("Catch the lion")} connu en japonais sous le nom {emph("Dobutsu Shogi")} est une variante pour enfants du Shogi.</>, 5000],
+  [<>Le jeu a été entièrement résolu par ordinateur. Il existe {emph("1 567 925 964")} configurations possibles.</>, 5000],
+  [<>Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le {emph("second")} joueur.</>, 5000],
+  [<>Pour apprendre les règles, tu peux clicker sur {emph("Tutoriel")}.</>, 3000]
 ]
 
 type InfoComponent = Component<{
@@ -18,7 +20,7 @@ type InfoComponent = Component<{
 }>
 
 const Info: InfoComponent = props => {
-  const [periodicMessage, setPeriodicMessage] = createSignal<string | null>("");
+  const [periodicMessage, setPeriodicMessage] = createSignal<JSXElement | null>("");
   let stop = false;
 
   onMount(async () => {
