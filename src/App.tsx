@@ -33,7 +33,7 @@ const App: Component = () => {
       setState("played", state.played.length, {pieces: piecesCopy, move: [fromPos, to]});
       let j = state.pieces.findIndex(piece => piece.position === to);
       if (j >= 0) {
-        captureAudio.play(); 
+        captureAudio.play();
         setState("pieces", j, { position: null, owner });
         setState("pieces", j, "type", type => type === 'H' ? 'C' : type);
         if (state.pieces[j].type === 'L') {
@@ -128,8 +128,8 @@ const App: Component = () => {
 
   return (
     <>
-      <audio src="../move.webm" preload="auto" ref={moveAudio} />
-      <audio src="../capture.webm" preload="auto" ref={captureAudio} />
+      <audio src="./move.webm" preload="auto" ref={moveAudio} />
+      <audio src="./capture.webm" preload="auto" ref={captureAudio} />
       <div class="relative w-screen min-h-screen bg-main bg-cover bg-no-repeat flex flew-row items-center justify-around portrait:flex-col">
         <div class="absolute bg-white w-full h-full opacity-30 z-10 pointer-events-none"/>
         <div class="flex flex-col bg-board b-cover p-6 border-2 border-black rounded-xl gap-4 z-20">

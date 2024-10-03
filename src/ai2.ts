@@ -85,7 +85,7 @@ function evaluatePosition(pieces: Piece[]): number {
   const board = new Array(12);
   board.fill(0);
   for (const piece of pieces) {
-    result = (piece.owner ? -1 : 1) * pieceValue[piece.type];
+    result += (piece.owner ? -1 : 1) * pieceValue[piece.type];
     if (piece.position !== null) {
       board[piece.position] = piece.owner + 1;
     }
