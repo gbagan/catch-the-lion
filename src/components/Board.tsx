@@ -121,7 +121,7 @@ const Board: BoardComponent = props => {
     <div class="w-[42rem] z-20">
       <svg
         viewBox="0 0 1600 1680"
-        class="select-none"
+        class="select-none touch-none"
         ref={svgEl}
         onPointerMove={pointerMove}
         onPointerCancel={cancelMove}

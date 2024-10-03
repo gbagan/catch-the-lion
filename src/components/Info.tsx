@@ -6,7 +6,7 @@ import { delay } from "../util";
 const emph = (msg: string) => <span class="text-green-500 font-bold">{msg}</span>
 
 const messages: [JSXElement, number][] = [
-  [<>Bienvenue sur l'appli {emph("Catch the lion")}</>, 3000],
+  [<>Bienvenue sur l'appli {emph("Catch the lion")}.</>, 3000],
   [<>{emph("Catch the lion")} connu en japonais sous le nom {emph("Dobutsu Shogi")} est une variante pour enfants du Shogi.</>, 5000],
   [<>Le jeu a été entièrement résolu par ordinateur. Il existe {emph("1 567 925 964")} configurations possibles.</>, 5000],
   [<>Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le {emph("second")} joueur.</>, 5000],
@@ -45,7 +45,7 @@ const Info: InfoComponent = props => {
     props.outcome !== null
       ? (
           props.outcome === 2
-          ? "Oh, cette configuration de pièces a été répétée 3 fois. C'est un match nul!"
+          ? <>Oh, cette configuration de pièces a été répétée 3 fois. C'est un {emph("match nul!")}</>
           : props.adversary === 'human' 
           ? `Bravo! Le joueur ${props.outcome + 1} a gagné!`
           : props.outcome === 0
