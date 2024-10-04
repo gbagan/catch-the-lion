@@ -56,4 +56,11 @@
   .tooltip::after {
     @apply absolute border-8 top-full left-1/2 ml-3 content-[""] border-transparent border-t-white;
   }
+
+  .tutorial-button {
+    @apply py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 
+     bg-white rounded-lg border border-gray-200 
+    hover:bg-gray-100 hover:text-blue-700
+    focus:z-10 focus:ring-4 focus:ring-gray-100 focus:outline-none;
+  }
 }

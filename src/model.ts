@@ -27,6 +27,7 @@ export type State = {
   isThinking: boolean,
   played: Played,
   dialogOpened: boolean,
+  tutorialStep: null | number,
 }
 
 export const newConfig: () => Config = () => ({
@@ -53,6 +54,7 @@ export const initState: () => State = () => ({
   config: newConfig(),
   isThinking: false,
   dialogOpened: false,
+  tutorialStep: null,
 })
 
 

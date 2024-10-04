@@ -2,21 +2,24 @@ import { Component, createMemo, createSignal, JSXElement, onCleanup, onMount } f
 import { Transition } from "solid-transition-group";
 import { Adversary } from "../model";
 import { delay } from "../util";
-
-const emph = (msg: string) => <span class="text-green-500 font-bold">{msg}</span>
+import { tutorial } from "../tutorial";
+import Emph from "./Emph";
 
 const messages: [JSXElement, number][] = [
-  [<>Bienvenue sur l'appli {emph("Catch the lion")}.</>, 3000],
-  [<>{emph("Catch the lion")} connu en japonais sous le nom {emph("Dobutsu Shogi")} est une variante pour enfants du Shogi.</>, 5000],
-  [<>Le jeu a été entièrement résolu par ordinateur. Il existe {emph("1 567 925 964")} configurations possibles.</>, 5000],
-  [<>Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le {emph("second")} joueur.</>, 5000],
-  [<>Pour apprendre les règles, tu peux clicker sur {emph("Tutoriel")}.</>, 3000]
+  [<>Bienvenue sur l'appli <Emph>Catch the lion</Emph>.</>, 3000],
+  [<><Emph>Catch the lion</Emph> connu en japonais sous le nom <Emph>Dobutsu Shogi</Emph> est une variante pour enfants du Shogi.</>, 5000],
+  [<>Le jeu a été entièrement résolu par ordinateur. Il existe <Emph>1 567 925 964</Emph> configurations possibles.</>, 5000],
+  [<>Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le <Emph>second</Emph> joueur.</>, 5000],
+  [<>Pour apprendre les règles, tu peux clicker sur <Emph>Tutoriel</Emph>.</>, 3000]
 ]
 
 type InfoComponent = Component<{
   outcome: null | 0 | 1 | 2,
   adversary: Adversary,
   isThinking: boolean,
+  tutorialStep: number | null,
+  tutorialNext: () => void,
+  tutorialPred: () => void,
 }>
 
 const Info: InfoComponent = props => {
@@ -41,30 +44,32 @@ const Info: InfoComponent = props => {
     stop = true;
   });
 
-  const message = createMemo(() => 
-    props.outcome !== null
-      ? (
+  const message = createMemo(() =>
+    props.tutorialStep !== null
+      ? tutorial[props.tutorialStep].text
+      : props.outcome !== null
+        ? (
           props.outcome === 2
-          ? <>Oh, cette configuration de pièces a été répétée 3 fois. C'est un {emph("match nul!")}</>
-          : props.adversary === 'human' 
-          ? `Bravo! Le joueur ${props.outcome + 1} a gagné!`
-          : props.outcome === 0
-          ? `Zut! J'ai perdu! Tu peux changer de difficulté en clickant sur nouvelle partie!`
-          : `Oh oui! J'ai gagné! Tu peux changer de difficulté en clickant sur nouvelle partie!`
+            ? <>Oh, cette configuration de pièces a été répétée 3 fois. C'est un <Emph>match nul</Emph></>
+            : props.adversary === 'human'
+              ? `Bravo! Le joueur ${props.outcome + 1} a gagné!`
+              : props.outcome === 0
+                ? <>Zut! J'ai perdu! Tu peux changer de difficulté en cliquant sur <Emph>Nouvelle partie</Emph></>
+                : <>Oh oui! J'ai gagné! Tu peux changer de difficulté en cliquant sur <Emph>Nouvelle partie</Emph></>
         )
-      : periodicMessage()
+        : periodicMessage()
   );
 
   const girlExpression = createMemo(() =>
     props.isThinking
-    ? "bg-thinking"
-    : props.outcome === 2
-    ? "bg-surprised"
-    : props.outcome !== null && props.outcome === 0 && props.adversary !== 'human'
-    ? "bg-crying"
-    : props.outcome !== null && (props.outcome === 1 || props.adversary === 'human')
-    ? "bg-happy"
-    : "bg-speaking"
+      ? "bg-thinking"
+      : props.outcome === 2
+        ? "bg-surprised"
+        : props.outcome !== null && props.outcome === 0 && props.adversary !== 'human'
+          ? "bg-crying"
+          : props.outcome !== null && (props.outcome === 1 || props.adversary === 'human')
+            ? "bg-happy"
+            : "bg-speaking"
   )
 
   return (
@@ -91,6 +96,14 @@ const Info: InfoComponent = props => {
       >
         {message() && <div class="tooltip">{message()}</div>}
       </Transition>
+      {props.tutorialStep !== null &&
+        <>
+          <div class="absolute -right-2 flex gap-32">
+            <button class="tutorial-button" onClick={props.tutorialPred}>Précedent</button>
+            <button class="tutorial-button" onClick={props.tutorialNext}>Suivant</button>
+          </div>  
+        </>
+      }
     </div>
   )
 }

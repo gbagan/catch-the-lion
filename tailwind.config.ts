@@ -24,13 +24,19 @@ export default {
       },
       animation: {
         'flip-y': 'flip-y 500ms linear forwards',
+        'lion-arrow': 'lion-arrow 2000ms linear forwards infinite',
       },
       keyframes: {
         "flip-y": {
           '0%': { opacity: '0', transform: 'rotateY(180deg)' },
           '100%': { opacity: '1', transform: 'rotateY(0)' },
+        },
+        "lion-arrow": {
+          '0%, 100%': {opacity: '0.7'},
+          '50%': {opacity: '0'    },
         }
-      }
+      },
+
     }
   },
   plugins: [],

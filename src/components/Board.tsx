@@ -1,8 +1,8 @@
-import { batch, Component, createMemo, createSignal, For, Index, Show } from "solid-js";
+import { batch, Component, createMemo, createSignal, Index } from "solid-js";
 import { Piece, PieceType, possibleMoves } from "../model";
 import range from "lodash.range";
 
-type Position = {x: number, y: number};
+type Position = { x: number, y: number };
 
 const rows = [350, 670, 1000, 1320];
 const columns = [480, 800, 1120];
@@ -48,18 +48,63 @@ const selectedPieceTransform = (pos: Position, piece: Piece) => {
   return `translate(${x}%, ${y}%) rotate(${rotate})`;
 }
 
+type SuggestionArrowComponent = Component<{
+  from: number,
+  to: number,
+  pieces: Piece[],
+}>;
+
+const SuggestionArrow: SuggestionArrowComponent = props => {
+  const coords = createMemo(() => {
+    const piece = props.pieces[props.from];
+
+    const x2 = 470 + 330 * (props.to % 3);
+    const y2 = 350 + 325 * (props.to / 3 | 0);
+    if (piece.position === null) {
+      
+      return {
+        x1: "100",
+        y1: 1570 - 200 * pieceIndex[piece.type],
+        x2,
+        y2
+      }
+    } else {
+      return {
+        x1: 470 + 330 * (piece.position % 3),
+        y1: 350 + 325 * (piece.position / 3 | 0),
+        x2,
+        y2,
+      }
+    }
+  });
+
+  return (
+    <line
+      x1={coords().x1}
+      x2={coords().x2}
+      y1={coords().y1}
+      y2={coords().y2}
+      stroke="red"
+      stroke-width="50"
+      class="pointer-events-none animate-lion-arrow"
+      marker-end="url(#arrowhead)"
+    />
+  )
+}
+
 
 type BoardComponent = Component<{
   pieces: Piece[],
   turn: 0 | 1,
   lastMove: [number | null, number] | null,
   canPlay: boolean,
+  wantedMove: [number, number] | null
   play: (from: number, to: number) => void,
 }>
 
 const Board: BoardComponent = props => {
   let svgEl!: SVGSVGElement;
-  
+
   const [selectedPiece, setSelectedPiece] = createSignal<number | null>(null);
   const [lastSelectedPiece, setLastSelectedPiece] = createSignal<number | null>(null);
   const [pointerPosition, setPointerPosition] = createSignal<Position | null>(null);
@@ -75,16 +120,16 @@ const Board: BoardComponent = props => {
 
   const ownBothPieces = (i: number, player: 0 | 1) =>
     props.pieces[i].owner === player
-    && props.pieces[i+4].owner === player
+    && props.pieces[i + 4].owner === player
     && props.pieces[i].position === null
-    && props.pieces[i+4].position === null
+    && props.pieces[i + 4].position === null
     && selectedPiece() !== i
     && selectedPiece() !== i + 4
 
   const pointerDown = (pos: number, e: PointerEvent) => {
     if (!props.canPlay || props.pieces[pos].owner !== props.turn)
       return;
-    
+
     if (e.currentTarget)
       (e.currentTarget as Element).releasePointerCapture(e.pointerId);
     batch(() => {
@@ -103,7 +148,7 @@ const Board: BoardComponent = props => {
     batch(() => {
       setPointerPosition(null);
       const from = selectedPiece();
-      if(from !== null) {
+      if (from !== null) {
         setSelectedPiece(null);
         props.play(from, to);
       }
@@ -128,8 +173,13 @@ const Board: BoardComponent = props => {
         onPointerLeave={cancelMove}
         onPointerUp={cancelMove}
       >
+        <defs>
+          <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="3" refY="2" orient="auto">
+            <polygon points="0 0, 4 2, 0 4" fill="red" />
+          </marker>
+        </defs>
         <symbol id="twice" viewBox="0 0 40 40">
-          <rect x="0" y="0" width="40" height="40" fill="red"/>
+          <rect x="0" y="0" width="40" height="40" fill="red" />
           <text x="20" y="30" fill="white" font-size="30px" font-weight="bold" text-anchor="middle">2</text>
         </symbol>
         <image x="200" y="0" width="1200" height="1680" href="./board.webp" />
@@ -142,7 +192,7 @@ const Board: BoardComponent = props => {
               height="298"
               stroke-width="20"
               stroke={moves().includes(i()) ? "lightgreen" : "transparent"}
-              classList={{"pointer-events-none": !moves().includes(i()) }}
+              classList={{ "pointer-events-none": !moves().includes(i()) }}
               fill={played(i()) ? "rgba(0, 255, 0, 0.3)" : "transparent"}
               onPointerUp={[pointerUp, i()]}
             />
@@ -156,7 +206,7 @@ const Board: BoardComponent = props => {
               y="-140"
               width="280"
               height="280"
-              style={{transform: transformPiece(piece())}}
+              style={{ transform: transformPiece(piece()) }}
               href={pieceImages[piece().type]}
               classList={{
                 "pointer-events-none": selectedPiece() !== null,
@@ -174,7 +224,7 @@ const Board: BoardComponent = props => {
                 href="#twice"
                 width="50"
                 height="50"
-                classList={{"opacity-0": !ownBothPieces(i(), 0)}}
+                classList={{ "opacity-0": !ownBothPieces(i(), 0) }}
                 style={{
                   transform: `translate(140px, ${1610 - 200 * j}px)`,
                 }}
@@ -183,7 +233,7 @@ const Board: BoardComponent = props => {
                 href="#twice"
                 width="50"
                 height="50"
-                classList={{"opacity-0": !ownBothPieces(i(), 1)}}
+                classList={{ "opacity-0": !ownBothPieces(i(), 1) }}
                 style={{
                   transform: `translate(1540px, ${240 + 200 * j}px)`,
                 }}
@@ -199,11 +249,19 @@ const Board: BoardComponent = props => {
             width="280"
             height="280"
             class="pointer-events-none"
-            style={{transform: selectedPieceTransform(pointerPosition()!, props.pieces[selectedPiece()!])}}
+            style={{ transform: selectedPieceTransform(pointerPosition()!, props.pieces[selectedPiece()!]) }}
             href={pieceImages[props.pieces[selectedPiece()!].type]}
           />
-
         }
+        {props.wantedMove && selectedPiece() === null &&
+          <SuggestionArrow
+            from={props.wantedMove[0]}
+            to={props.wantedMove[1]}
+            pieces={props.pieces}
+          />
+        }
+
+
       </svg>
     </div>
   )
