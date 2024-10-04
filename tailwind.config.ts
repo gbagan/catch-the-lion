@@ -9,7 +9,7 @@ export default {
       },
       backgroundImage: {
         main: "url('../background.webp')",
-        board: "url('../board2.webp')",
+        board: "url('../board4.webp')",
         thinking: "url('../girl_thinking.webp')",
         happy: "url('../girl_happy.webp')",
         crying: "url('../girl_crying.webp')",

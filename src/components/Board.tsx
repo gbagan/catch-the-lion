@@ -1,18 +1,21 @@
 import { batch, Component, createMemo, createSignal, Index } from "solid-js";
-import { Piece, PieceType, possibleMoves } from "../model";
+import { movesDict, Piece, PieceType, possibleMoves } from "../model";
 import range from "lodash.range";
 
 type Position = { x: number, y: number };
 
-const rows = [350, 670, 1000, 1320];
-const columns = [480, 800, 1120];
+const BOARD_START_X = 320;
+const BOARD_START_Y = 200;
+const SQUARE_WIDTH = 330;
+const SQUARE_HEIGHT = 325;
+const TILE_SIZE = 260;
 
-const pieceImages: Record<PieceType, string> = {
-  L: "./lion.webp",
-  G: "./giraffe.webp",
-  E: "./elephant.webp",
-  C: "./chick.webp",
-  H: "./chicken.webp",
+const PIECE_COLOR: Record<PieceType, string> = {
+  L: "#fbc0bf",
+  G: "#d6b3d5",
+  E: "#d6b3d5",
+  C: "#f0f4a3",
+  H: "#f0f4a3",
 }
 
 const pieceIndex: Record<PieceType, number> = {
@@ -33,8 +36,8 @@ const transformPiece = (piece: Piece) => {
     y = piece.owner ? 200 + 200 * pieceIndex[piece.type] : 1570 - 200 * pieceIndex[piece.type];
     scale = 0.7;
   } else {
-    x = columns[position % 3];
-    y = rows[position / 3 | 0];
+    x = BOARD_START_X + SQUARE_WIDTH / 2 + SQUARE_WIDTH * (position % 3);
+    y = BOARD_START_Y + SQUARE_HEIGHT / 2 + SQUARE_HEIGHT * (position / 3 | 0);
     scale = 1;
   }
   const rotate = piece.owner ? '180deg' : '0';
@@ -61,7 +64,7 @@ const SuggestionArrow: SuggestionArrowComponent = props => {
     const x2 = 470 + 330 * (props.to % 3);
     const y2 = 350 + 325 * (props.to / 3 | 0);
     if (piece.position === null) {
-      
+
       return {
         x1: "100",
         y1: 1570 - 200 * pieceIndex[piece.type],
@@ -91,7 +94,6 @@ const SuggestionArrow: SuggestionArrowComponent = props => {
     />
   )
 }
-
 
 type BoardComponent = Component<{
   pieces: Piece[],
@@ -137,7 +139,6 @@ const Board: BoardComponent = props => {
       setLastSelectedPiece(pos);
       setPointerPosition(getPointerPosition(e));
     });
-    setTimeout(() => setLastSelectedPiece(null), 500);
   }
 
   const pointerMove = (e: PointerEvent) => {
@@ -153,6 +154,7 @@ const Board: BoardComponent = props => {
         props.play(from, to);
       }
     })
+    setTimeout(() => setLastSelectedPiece(null), 500);
   }
 
   const cancelMove = () => {
@@ -182,14 +184,53 @@ const Board: BoardComponent = props => {
           <rect x="0" y="0" width="40" height="40" fill="red" />
           <text x="20" y="30" fill="white" font-size="30px" font-weight="bold" text-anchor="middle">2</text>
         </symbol>
-        <image x="200" y="0" width="1200" height="1680" href="./board.webp" />
+        {['L', 'G', 'E', 'C', 'H'].map(i =>
+          <symbol id={`piece-${i}`} viewBox="0 0 50 50">
+            <rect x="0.5" y="0.5" width="49" height="49" rx="5" ry="5" fill={PIECE_COLOR[i as PieceType]} stroke="black" stroke-width="1" />
+            <image x="6" y="6" width="38" height="38" href={`./piece-${i}.webp`} />
+            {movesDict[i as PieceType].map(([dx, dy]) =>
+              <circle
+                cx={25 + 20 * dx}
+                cy={25 - 20 * dy}
+                r="2"
+                stroke="black"
+                fill="red"
+              />
+            )}
+          </symbol>
+        )}
+        <image x="200" y="-500" width="1200" height="2580" href="./board4.webp" preserveAspectRatio="xMidYMid"/>
+        {[0, 1, 2, 3, 4].map(i =>
+          <line
+            x1={BOARD_START_X}
+            y1={BOARD_START_Y + i * SQUARE_HEIGHT}
+            x2={BOARD_START_X + 3 * SQUARE_WIDTH}
+            y2={BOARD_START_Y + i * SQUARE_HEIGHT}
+            stroke="red"
+            stroke-width="5"
+            stroke-dasharray={`${SQUARE_WIDTH / 8} ${SQUARE_WIDTH / 8}`}
+            stroke-dashoffset={SQUARE_WIDTH / 16}
+          />
+        )}
+        {[0, 1, 2, 3].map(i =>
+          <line
+            x1={BOARD_START_X + i * SQUARE_WIDTH}
+            y1={BOARD_START_Y}
+            x2={BOARD_START_X + i * SQUARE_WIDTH}
+            y2={BOARD_START_Y + 4 * SQUARE_HEIGHT}
+            stroke="red"
+            stroke-width="5"
+            stroke-dasharray={`${SQUARE_HEIGHT / 8} ${SQUARE_HEIGHT / 8}`}
+            stroke-dashoffset={SQUARE_HEIGHT / 16}
+          />
+        )}
         <Index each={range(0, 12)}>
           {i =>
             <rect
-              x={320 + 330 * (i() % 3)}
-              y={200 + 325 * (i() / 3 | 0)}
-              width="298"
-              height="298"
+              x={BOARD_START_X + 10 + SQUARE_WIDTH * (i() % 3)}
+              y={BOARD_START_Y + 10 + SQUARE_HEIGHT * (i() / 3 | 0)}
+              width={SQUARE_WIDTH-20}
+              height={SQUARE_HEIGHT-20}
               stroke-width="20"
               stroke={moves().includes(i()) ? "lightgreen" : "transparent"}
               classList={{ "pointer-events-none": !moves().includes(i()) }}
@@ -201,19 +242,20 @@ const Board: BoardComponent = props => {
 
         <Index each={props.pieces}>
           {(piece, i) =>
-            <image
-              x="-140"
-              y="-140"
-              width="280"
-              height="280"
+            <use
+              x={-TILE_SIZE / 2}
+              y={-TILE_SIZE / 2}
+              width={TILE_SIZE}
+              height={TILE_SIZE}
               style={{ transform: transformPiece(piece()) }}
-              href={pieceImages[piece().type]}
+              href={`#piece-${piece().type}`}
               classList={{
                 "pointer-events-none": selectedPiece() !== null,
                 "transition-transform duration-1000": lastSelectedPiece() !== i,
                 "opacity-0": i === selectedPiece() && pointerPosition() !== null
               }}
               onPointerDown={[pointerDown, i]}
+              filter="drop-shadow(16px 16px 16px gray)"
             />
           }
         </Index>
@@ -243,14 +285,14 @@ const Board: BoardComponent = props => {
         </Index>
 
         {pointerPosition() && selectedPiece() !== null &&
-          <image
-            x="-140"
-            y="-140"
-            width="280"
-            height="280"
+          <use
+            x={-TILE_SIZE / 2}
+            y={-TILE_SIZE / 2}
+            width={TILE_SIZE}
+            height={TILE_SIZE}
             class="pointer-events-none"
             style={{ transform: selectedPieceTransform(pointerPosition()!, props.pieces[selectedPiece()!]) }}
-            href={pieceImages[props.pieces[selectedPiece()!].type]}
+            href={`#piece-${props.pieces[selectedPiece()!].type}`}
           />
         }
         {props.wantedMove && selectedPiece() === null &&
@@ -260,8 +302,6 @@ const Board: BoardComponent = props => {
             pieces={props.pieces}
           />
         }
-
-
       </svg>
     </div>
   )
