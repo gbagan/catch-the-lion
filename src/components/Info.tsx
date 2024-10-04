@@ -99,7 +99,7 @@ const Info: InfoComponent = props => {
       {props.tutorialStep !== null &&
         <>
           <div class="absolute -right-2 flex gap-32">
-            <button class="tutorial-button" onClick={props.tutorialPred}>Précedent</button>
+            <button class="tutorial-button" onClick={props.tutorialPred}>Précédent</button>
             <button class="tutorial-button" onClick={props.tutorialNext}>Suivant</button>
           </div>  
         </>
