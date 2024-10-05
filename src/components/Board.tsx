@@ -7,7 +7,7 @@ type Position = { x: number, y: number };
 const BOARD_START_X = 320;
 const BOARD_START_Y = 200;
 const SQUARE_WIDTH = 330;
-const SQUARE_HEIGHT = 325;
+const SQUARE_HEIGHT = 325; 
 const TILE_SIZE = 260;
 
 const PIECE_COLOR: Record<PieceType, string> = {
@@ -15,7 +15,7 @@ const PIECE_COLOR: Record<PieceType, string> = {
   G: "#d6b3d5",
   E: "#d6b3d5",
   C: "#f0f4a3",
-  H: "#f0f4a3",
+  H: "#eef1a5 ",
 }
 
 const pieceIndex: Record<PieceType, number> = {
@@ -61,8 +61,8 @@ const SuggestionArrow: SuggestionArrowComponent = props => {
   const coords = createMemo(() => {
     const piece = props.pieces[props.from];
 
-    const x2 = 470 + 330 * (props.to % 3);
-    const y2 = 350 + 325 * (props.to / 3 | 0);
+    const x2 = BOARD_START_X + SQUARE_WIDTH / 2 + SQUARE_WIDTH * (props.to % 3);
+    const y2 = BOARD_START_Y + SQUARE_HEIGHT / 2 + SQUARE_HEIGHT * (props.to / 3 | 0);
     if (piece.position === null) {
 
       return {
@@ -73,8 +73,8 @@ const SuggestionArrow: SuggestionArrowComponent = props => {
       }
     } else {
       return {
-        x1: 470 + 330 * (piece.position % 3),
-        y1: 350 + 325 * (piece.position / 3 | 0),
+        x1: BOARD_START_X + SQUARE_WIDTH / 2 + SQUARE_WIDTH * (piece.position % 3),
+        y1: BOARD_START_Y + SQUARE_HEIGHT / 2 + SQUARE_HEIGHT * (piece.position / 3 | 0),
         x2,
         y2,
       }
