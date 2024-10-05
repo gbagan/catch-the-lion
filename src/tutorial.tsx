@@ -82,7 +82,10 @@ export const tutorial: Tutorial = [
   { text: <>Une fois une <Emph>poule</Emph> capturée, elle redevient un <Emph>poussin</Emph>. Tu ne peux pas directement promouvoir un poussin de la réserve en poule.</>,
     action: read 
   },
-
+  { text: <>Tu peux également gagner la partie en emmenant ton <Emph>lion</Emph> sur la dernière rangée.<br/>
+            Le lion ne doit pas pouvoir être immédiatement capturé par l'adversaire.</>,
+    action: read
+  },
   { text: <>Bravo! Tu as complété le tutoriel! Tu peux commencer à jouer en cliquant sur <Emph>Nouvelle partie</Emph>.</>,
     action: read 
   },

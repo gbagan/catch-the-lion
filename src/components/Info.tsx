@@ -94,7 +94,7 @@ const Info: InfoComponent = props => {
           a.finished.then(done);
         }}
       >
-        {message() && <div class="tooltip">{message()}</div>}
+        {message() && <div class="tooltip -right-5">{message()}</div>}
       </Transition>
       {props.tutorialStep !== null &&
         <>

@@ -7,9 +7,11 @@ import NewGame from './components/NewGame';
 import { delay, last } from './util';
 import Worker from './worker?worker';
 import { tutorial } from './tutorial';
+import Rules from './components/Rules';
+import Credits from './components/Credits';
 
 const App: Component = () => {
-  let newGameDialog!: HTMLDialogElement;
+  let dialog!: HTMLDialogElement;
   let moveAudio!: HTMLAudioElement;
   let captureAudio!: HTMLAudioElement;
 
@@ -19,7 +21,7 @@ const App: Component = () => {
     if (state.tutorialStep === null)
       return null;
     const action = tutorial[state.tutorialStep].action;
-    return action.type === "playerAction" ? [action.from, action.to]  as [number, number] : null;
+    return action.type === "playerAction" ? [action.from, action.to] as [number, number] : null;
   }
 
   const worker = new Worker();
@@ -115,13 +117,24 @@ const App: Component = () => {
   }
 
   const openNewGameDialog = () => {
-    setState("dialogOpened", true);
-    newGameDialog.showModal();
+    setState("dialog", "newgame");
+    dialog.showModal();
   }
 
-  const closeNewGameDialog = () => {
-    newGameDialog.close();
-    setState("dialogOpened", false);
+  const openRulesDialog = () => {
+    setState("dialog", "rules");
+    dialog.showModal();
+  }
+
+  const openCreditsDialog = () => {
+    setState("dialog", "credits");
+    dialog.showModal();
+  }
+
+
+  const closeDialog = () => {
+    dialog.close();
+    setState("dialog", null);
   }
 
   const newGame = (config: Config) => {
@@ -132,10 +145,10 @@ const App: Component = () => {
       state.outcome = null;
       state.turn = state.config.machineStarts ? 1 : 0;
       state.isThinking = state.config.machineStarts;
-      state.dialogOpened = false;
+      state.dialog = null;
       state.tutorialStep = null;
     }))
-    newGameDialog.close();
+    dialog.close();
     if (state.config.machineStarts) {
       machinePlays();
     }
@@ -148,7 +161,7 @@ const App: Component = () => {
       state.outcome = null;
       state.turn = 0;
       state.isThinking = false;
-      state.dialogOpened = false;
+      state.dialog = null;
       state.tutorialStep = 0;
     }))
   }
@@ -197,7 +210,8 @@ const App: Component = () => {
           <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
           <button class="btn" onClick={undo}>Annuler</button>
           <button class="btn" onClick={startTutorial}>Tutoriel</button>
-          <button class="btn">Information</button>
+          <button class="btn" onClick={openRulesDialog}>Règles</button>
+          <button class="btn" onClick={openCreditsDialog}>Crédits</button>
         </div>
         {state.tutorialStep === null ?
           <Board
@@ -228,14 +242,20 @@ const App: Component = () => {
       </div>
       <dialog
         class="dialog"
-        ref={newGameDialog}
+        ref={dialog}
       >
-        {state.dialogOpened &&
+        {state.dialog === "newgame"
+          ?
           <NewGame
             config={state.config}
-            closeDialog={closeNewGameDialog}
+            closeDialog={closeDialog}
             newGame={newGame}
           />
+          : state.dialog === "rules"
+          ? <Rules closeDialog={closeDialog} />
+          : state.dialog === "credits"
+          ? <Credits closeDialog={closeDialog} />
+          : null
         }
       </dialog>
     </>

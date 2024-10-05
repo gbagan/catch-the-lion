@@ -50,11 +50,11 @@
   .tooltip {
     @apply bg-white absolute text-center rounded-xl
       px-2 py-1 mb-4 w-96
-      right-0 bottom-full transition-opacity duration-500;
+      bottom-full transition-opacity duration-500;
   }
 
   .tooltip::after {
-    @apply absolute border-8 top-full left-1/2 ml-3 content-[""] border-transparent border-t-white;
+    @apply absolute border-8 top-full left-[60%] ml-3 content-[""] border-transparent border-t-white;
   }
 
   .tutorial-button {

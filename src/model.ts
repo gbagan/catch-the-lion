@@ -26,7 +26,7 @@ export type State = {
   outcome: 0 | 1 | 2 | null,
   isThinking: boolean,
   played: Played,
-  dialogOpened: boolean,
+  dialog: "newgame" | "rules" | "credits" | null,
   tutorialStep: null | number,
 }
 
@@ -53,7 +53,7 @@ export const initState: () => State = () => ({
   played: [],
   config: newConfig(),
   isThinking: false,
-  dialogOpened: false,
+  dialog: null,
   tutorialStep: null,
 })
 
