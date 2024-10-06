@@ -1,4 +1,4 @@
-import { alphabeta } from "./ai2";
+import { alphabeta } from "./ai2"
 
 onmessage = (e) =>
   {pieces, turn, adversary} := e.data

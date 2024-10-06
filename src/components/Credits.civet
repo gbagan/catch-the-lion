@@ -1,5 +1,5 @@
-import { Component } from "solid-js";
-import Emph from "./Emph.civet";
+import { Component } from "solid-js"
+import Emph from "./Emph.civet"
 
 Rules: Component<{closeDialog: () => void}> := (props) =>
   <div class="dialog-title">Règles de Catch the lion
@@ -13,6 +13,6 @@ Rules: Component<{closeDialog: () => void}> := (props) =>
       <li class="list-disc">Les différents sont proviennent de la plate-forme Lichess.
       <li class="list-disc">Les librairies Solid et Tailwind ont été utilisées.
   <div class="dialog-buttons">
-    <button class="btn" onClick={props.closeDialog}>OK</button>
+    <button class="btn" onClick=props.closeDialog>OK</button>
 
-export default Rules;
+export default Rules

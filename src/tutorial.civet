@@ -1,25 +1,25 @@
 import { JSXElement } from "solid-js"
-import Emph from "./components/Emph";
-import Warn from "./components/Warn";
+import Emph from "./components/Emph.civet"
+import Warn from "./components/Warn"
 
 export type TutorialAction = {
   type: 'read'
 } | {
   type: 'playerAction'
-  from: number,
-  to: number,
+  from: number
+  to: number
 } | {
-  type: "machineAction",
-  from: number, 
-  to: number,  
+  type: "machineAction"
+  from: number
+  to: number 
 }
 
-const read: TutorialAction = {type: 'read'};
+const read: TutorialAction = {type: 'read'}
 
 export type Tutorial = {
   text: JSXElement,
   action: TutorialAction,
-}[];
+}[]
 
 export const tutorial: Tutorial = [
   { text: <>Bienvenue dans le <Emph>tutoriel</Emph>!</>, action: read},
@@ -34,7 +34,7 @@ export const tutorial: Tutorial = [
             si la case d'arrivée est vide ou si il y a une pièce adverse dessus.</>,
     action: read
   },
-  {text: <>Une pièce peut <Emph>capturer</Emph> une pièce adverse en se déplaçant dessus.
+  { text: <>Une pièce peut <Emph>capturer</Emph> une pièce adverse en se déplaçant dessus.
            Essaie de capturer mon <Warn>poussin</Warn> avec ton <Emph>poussin</Emph> en utilisant un <Emph>Glisser-déposer</Emph>.</>,
     action: {type: 'playerAction', from: 3, to: 4}
   },

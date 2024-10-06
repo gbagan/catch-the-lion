@@ -1,9 +1,9 @@
-import { Component, createMemo, createSignal, JSXElement, onCleanup, onMount } from "solid-js";
-import { Transition } from "solid-transition-group";
-import { Adversary } from "../model";
-import { delay } from "../util";
-import { tutorial } from "../tutorial";
-import Emph from "./Emph.civet";
+import { Component, createMemo, createSignal, JSXElement, onCleanup, onMount } from "solid-js"
+import { Transition } from "solid-transition-group"
+import { Adversary } from "../model"
+import { delay } from "../util"
+import { tutorial } from "../tutorial"
+import Emph from "./Emph.civet"
 
 messages: [JSXElement, number][] := [
   [<>Bienvenue sur l'appli' <Emph>Catch the lion</Emph>.</>, 3000],
@@ -14,34 +14,34 @@ messages: [JSXElement, number][] := [
 ]
 
 type InfoComponent = Component<{
-  outcome: null | 0 | 1 | 2,
-  adversary: Adversary,
-  isThinking: boolean,
-  tutorialStep: number | null,
-  tutorialNext: () => void,
-  tutorialPred: () => void,
+  outcome: null | 0 | 1 | 2
+  adversary: Adversary
+  isThinking: boolean
+  tutorialStep: number | null
+  tutorialNext: () => void
+  tutorialPred: () => void
 }>
 
-const Info: InfoComponent = (props) => {
-  [periodicMessage, setPeriodicMessage] := createSignal<JSXElement | null>("");
-  stop .= false;
+const Info: InfoComponent = (props) =>
+  [periodicMessage, setPeriodicMessage] := createSignal<JSXElement | null> ""
+  stop .= false
 
-  onMount(async () => {
-    i .= 0;
-    while (true)
+  onMount(async () =>
+    i .= 0
+    while true
       d := messages[i][1];
-      setPeriodicMessage messages[i][0];
-      await delay(d);
-      setPeriodicMessage null;
-      i = (i + 1) % messages.length;
-      if (stop)
-        break;
-      await delay(1500)
-  });
+      setPeriodicMessage messages[i][0]
+      await delay d
+      setPeriodicMessage null
+      i = (i + 1) % messages.length
+      if stop
+        break
+      await delay 1500
+  )
 
-  onCleanup(() => {
-    stop = true;
-  });
+  onCleanup(() =>
+    stop = true
+  )
 
   message := createMemo( =>
     if props.tutorialStep !== null
@@ -71,38 +71,30 @@ const Info: InfoComponent = (props) => {
     then "bg-happy"
     else "bg-speaking"
 
-  return (
-    <div class={`z-20 relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`}>
-      <Transition
-        onEnter={(el, done) => {
-          a := el.animate([
-            { opacity: 0 },
-            { opacity: 1 }], {
-            duration: 500
-          }
-          );
-          a.finished.then(done);
-        }}
-        onExit={(el, done) => {
-          a := el.animate([
-            { opacity: 1 },
-            { opacity: 0 }], {
-            duration: 500
-          }
-          );
-          a.finished.then(done);
-        }}
-      >
-        {message() && <div class="tooltip -right-5">{message()}</div>}
-      </Transition>
-      {props.tutorialStep !== null &&
-        <div class="absolute -right-2 flex gap-32">
-          <button class="tutorial-button" onClick={props.tutorialPred}>Précédent</button>
-          <button class="tutorial-button" onClick={props.tutorialNext}>Suivant</button>
-        </div>  
+  <div class=`z-20 relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`>
+    <Transition
+      onEnter={(el, done) => {
+        a := el.animate([
+          { opacity: 0 },
+          { opacity: 1 }], {
+          duration: 500
+        })
+        a.finished.then(done)
+      }}
+      onExit={(el, done) =>
+        a := el.animate([
+          { opacity: 1 },
+          { opacity: 0 }], {
+          duration: 500
+        })
+        a.finished.then(done)
       }
-    </div>
-  )
-}
+    >
+      {message() && <div class="tooltip -right-5">{message()}}
+    {props.tutorialStep !== null &&
+      <div class="absolute -right-2 flex gap-32">
+        <button class="tutorial-button" onClick={props.tutorialPred}>Précédent
+        <button class="tutorial-button" onClick={props.tutorialNext}>Suivant
+    }
 
-export default Info;
+export default Info
