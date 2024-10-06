@@ -1,0 +1,114 @@
+import { movesDict, Piece, PieceType } from "./model.civet"
+
+pieceValue: Record<PieceType, number> :=
+  L: 1000
+  H: 7
+  G: 5
+  E: 3
+  C: 1
+
+function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][]
+  result: [number, number][] := []
+  board := new Array 12
+  board.fill 0
+  for piece2 of pieces
+    if piece2.position !== null
+      board[piece2.position] = piece2.owner + 1
+
+  for i .= 0; i < 8; i++
+    piece := pieces[i]
+    if piece.owner !== turn
+      continue
+    if piece.position === null
+      if i < 4 || pieces[i - 4].owner !== piece.owner || pieces[i - 4].position !== null
+        for j .= 0; j < 12; j++
+          if !board[j]
+            result.push([i, j])
+    else
+      x := piece.position % 3
+      y := piece.position / 3 | 0
+      moves := movesDict[piece.type]
+      for move of moves
+        [dx, dy] := turn ? [move[0], move[1]] : [-move[0], -move[1]]
+        x2 := x + dx
+        y2 := y + dy
+        if x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4
+          index := 3 * y2 + x2;
+          if board[index] !== piece.owner + 1
+            result.push([i, index])
+  result
+
+function playMove(pieces: Piece[], [from, to]: [number, number]): Piece[]
+  { owner, type, position } := pieces[from]
+  piecesCopy := pieces.map((piece) => ({ ...piece }))
+  j := pieces.findIndex((piece) => piece.position === to)
+  if j >= 0
+    piecesCopy[j].position = null
+    piecesCopy[j].owner = owner
+    if (piecesCopy[j].type === 'H')
+      piecesCopy[j].type = 'C'
+  piecesCopy[from].position = to
+  if type === 'C' && position !== null && (owner && to > 8 || !owner && to < 3)
+    piecesCopy[from].type = 'H'
+  piecesCopy
+
+function evaluatePosition(pieces: Piece[]): number
+  result .= 0
+
+  board := new Array 12
+  board.fill 0
+  for const piece of pieces
+    result += (piece.owner ? -1 : 1) * pieceValue[piece.type]
+    if piece.position !== null
+      board[piece.position] = piece.owner + 1
+
+  for i .= 0; i < 8; i++
+    piece := pieces[i]
+
+    if piece.position !== null
+      x := piece.position % 3
+      y := piece.position / 3 | 0
+      moves := movesDict[piece.type]
+      for const move of moves
+        [dx, dy] := piece.owner === 1 ? [move[0], move[1]] : [-move[0], -move[1]]
+        x2 := x + dx;
+        y2 := y + dy;
+        if x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4
+          index := 3 * y2 + x2;
+          if (board[index] !== piece.owner + 1)
+            result += 0.1 * (piece.owner ? -1 : 1) // mobilityWeight[piece.type];
+  result
+
+export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: number, pieces: Piece[]): [number, [number, number]]
+  moves := possibleMoves(pieces, turn)
+  let score!: number
+  let bestMove!: [number, number]
+
+  if depth === 0
+    score = evaluatePosition(pieces)
+    return [score, bestMove]
+  else if pieces[1].position === null
+    return [-100000-depth, bestMove]
+  else if pieces[5].position === null
+    return [100000+depth, bestMove];
+  else if turn && pieces[5].position > 8
+    return [-100000-depth, bestMove]
+  else if turn && pieces[1].position < 3
+    return [100000+depth, bestMove]
+  else
+    for i .= 0; i < moves.length; i++
+      move := moves[i]
+      newPieces := playMove(pieces, move)
+      if turn === 0
+        score = alphabeta(depth - 1, 1, alpha, beta, newPieces)[0]
+        if (score > alpha)
+          alpha = score;
+          bestMove = move
+      else
+        score = alphabeta(depth - 1, 0, alpha, beta, newPieces)[0]
+        if score < beta
+          beta = score
+          bestMove = move
+      if alpha >= beta
+        break
+    return turn === 0 ? [alpha, bestMove] : [beta, bestMove]

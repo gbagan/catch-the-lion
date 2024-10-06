@@ -1,5 +1,5 @@
 {
-  "name": "neuron",
+  "name": "catch-the-lion",
   "version": "0.0.0",
   "description": "",
   "private": true,
@@ -11,6 +11,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@danielx/civet": "^0.7.33",
     "@types/lodash.maxby": "^4.6.9",
     "@types/lodash.minby": "^4.6.9",
     "@types/lodash.range": "^3.2.9",
