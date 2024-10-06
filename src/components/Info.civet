@@ -1,16 +1,18 @@
-import { Component, createMemo, createSignal, JSXElement, onCleanup, onMount } from "solid-js"
+import { Component, For, createMemo, createSignal, onCleanup, onMount } from "solid-js"
 import { Transition } from "solid-transition-group"
-import { Adversary } from "../model.civet"
+import { Adversary, Message } from "../model.civet"
 import { delay } from "../util.civet"
 import { tutorial } from "../tutorial.civet"
-import Emph from "./Emph.civet"
+import { Green, Blue, Red } from "./Emph.civet"
 
-messages: [JSXElement, number][] := [
-  [<>Bienvenue sur l'appli' <Emph>Catch the lion</Emph>.</>, 3000]
-  [<><Emph>Catch the lion</Emph> connu en japonais sous le nom <Emph>Dobutsu Shogi</Emph> est une variante pour enfants du Shogi.</>, 5000]
-  [<>Le jeu a été entièrement résolu par ordinateur. Il existe <Emph>1 567 925 964</Emph> configurations possibles.</>, 5000]
-  [<>Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le <Emph>second</Emph> joueur.</>, 5000]
-  [<>Pour apprendre les règles, tu peux clicker sur <Emph>Tutoriel</Emph>.</>, 3000]
+const emph = (x: string) => ["B", x] as ["B", string]
+
+messages: [Message, number][] := [
+  [["Bienvenue sur l'appli ", emph("Catch the lion"), "."], 3000]
+  [[emph("Catch the lion"), " connu en japonais sous le nom ", emph("Dobutsu Shogi"), " est une variante pour enfants du Shogi."], 5000]
+  [["Le jeu a été entièrement résolu par ordinateur. Il existe ", emph("1 567 925 964"), " configurations possibles."], 5000]
+  [["Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le ", emph("second"), " joueur."], 5000]
+  [["Pour apprendre les règles, tu peux clicker sur ", emph("Tutoriel"), "."], 3000]
 ]
 
 type InfoComponent = Component<{
@@ -23,7 +25,7 @@ type InfoComponent = Component<{
 }>
 
 const Info: InfoComponent = (props) =>
-  [periodicMessage, setPeriodicMessage] := createSignal<JSXElement | null> ""
+  [periodicMessage, setPeriodicMessage] := createSignal<Message | null> null
   stop .= false
 
   onMount async () =>
@@ -48,12 +50,12 @@ const Info: InfoComponent = (props) =>
     else if props.outcome !== null
     then (
       if props.outcome === 2
-      then <>Oh, cette configuration de pièces a été répétée 3 fois. C&apos;est un <Emph>match nul</Emph></>
+      then ["Oh, cette configuration de pièces a été répétée 3 fois. C'est un ", emph("match nul"), "."]
       else if props.adversary === 'human'
-      then `Bravo! Le joueur ${props.outcome + 1} a gagné!`
+      then [`Bravo! Le joueur ${props.outcome + 1} a gagné!`]
       else if props.outcome === 0
-      then <>Zut! J&apos;ai perdu! Tu peux changer de difficulté en cliquant sur <Emph>Nouvelle partie</Emph></>
-      else <>Oh oui! J&apos;ai gagné! Tu peux changer de difficulté en cliquant sur <Emph>Nouvelle partie</Emph></>
+      then ["Zut! J'ai perdu! Tu peux changer de difficulté en cliquant sur ", emph("Nouvelle partie"), "."]
+      else ["Oh oui! J'ai gagné! Tu peux changer de difficulté en cliquant sur ", emph("Nouvelle partie"), "."]
     )
     else
       periodicMessage()
@@ -80,7 +82,16 @@ const Info: InfoComponent = (props) =>
         a.finished.then(done)
       }
     >
-      {message() && <div class="tooltip -right-5">{message()}}
+      {message() &&
+        <div class="tooltip -right-5">
+          <For each={message()}>
+            {(m) =>
+              if typeof m === "string" then m
+              else if m[0] === "R" then <Red>{m[1]}
+              else if m[0] === "G" then <Green>{m[1]}
+              else <Blue>{m[1]}
+            }
+      }
     {props.tutorialStep !== null &&
       <div class="absolute -right-2 flex gap-32">
         <button class="tutorial-button" onClick={props.tutorialPred}>Précédent

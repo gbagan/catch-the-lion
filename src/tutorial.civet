@@ -1,6 +1,4 @@
-import { JSXElement } from "solid-js"
-import Emph from "./components/Emph.civet"
-import Warn from "./components/Warn.civet"
+import { Message } from "./model.civet"
 
 export type TutorialAction = {
   type: 'read'
@@ -16,77 +14,83 @@ export type TutorialAction = {
 
 const read: TutorialAction = {type: 'read'}
 
+const red = (x: string) => ["R", x] as ["R", string]
+const green = (x: string) => ["G", x] as ["G", string]
+const blue = (x: string) => ["B", x] as ["B", string]
+
 export type Tutorial = {
-  text: JSXElement
+  text: Message
   action: TutorialAction
 }[]
 
 export const tutorial: Tutorial = [
-  { text: <>Bienvenue dans le <Emph>tutoriel</Emph>!</>, action: read},
-  { text: <><Emph>Catch the lion</Emph> est un jeu à deux joueurs sur un plateau 4x3.
-            Le but est de capturer le <Warn>lion</Warn> adverse.</>, action: read
-  },
-  { text: <>Chaque joueur possède 4 pièces: un <Emph>lion</Emph>, une <Emph>girafe</Emph>, un <Emph>éléphant</Emph> et un <Emph>poussin</Emph>.
-            L'<Emph>orientation</Emph> d'une pièce indique à quel joueur elle appartient.</>,
+  { text: ["Bienvenue dans le ", blue("tutoriel"), "!"], action: read},
+  { text: [blue("Catch the lion"), " est un jeu à deux joueurs sur un plateau 4x3. "
+            "Le but est de capturer le ", red("lion"), " adverse."],
     action: read
   },
-  { text: <>Chaque pièce peut se déplacer d'une case dans une des directions indiquées sur la pièce
-            si la case d'arrivée est vide ou si il y a une pièce adverse dessus.</>,
+  { text: ["Chaque joueur possède 4 pièces: un ", green("lion"), ", une ", green("girafe"),
+            ", un", green("éléphant"), " et un ", green("poussin"),
+            ". L'", blue("orientation"), " d'une pièce indique à quel joueur elle appartient."],
     action: read
   },
-  { text: <>Une pièce peut <Emph>capturer</Emph> une pièce adverse en se déplaçant dessus.
-           Essaie de capturer mon <Warn>poussin</Warn> avec ton <Emph>poussin</Emph> en utilisant un <Emph>Glisser-déposer</Emph>.</>,
+  { text: ["Chaque pièce peut se déplacer d'une case dans une des directions indiquées sur la pièce si la case d'arrivée est vide ou si il y a une pièce adverse dessus."],
+    action: read
+  },
+  { text: ["Une pièce peut ", blue("capturer"), " une pièce adverse en se déplaçant dessus. ",
+           "Essaie de capturer mon ", red("poussin"), " avec ton ", green("poussin"), " en utilisant un ", blue("Glisser-déposer"), "."],
     action: {type: 'playerAction', from: 3, to: 4}
   },
-  { text: <>Bravo, le poussin adverse fait partie maintenant de ta <Emph>réserve</Emph>.
-            A partir du tour suivant tu pourras le placer sur n'importe quelle case vide.</>,
+  { text: ["Bravo, le poussin adverse fait maintenant partie de ta ", green("réserve"),
+            ". A partir du tour suivant tu pourras le placer sur n'importe quelle case vide."],
     action: read
   },
-  { text: <>C'est maintenant à moi de jouer</>,
+  { text: ["C'est maintenant à moi de jouer"],
     action: {type: 'machineAction', from: 4, to: 4}
   },
-  { text: <>J'ai capturé ton <Emph>poussin</Emph> avec mon <Warn>éléphant</Warn>.
-            Essaie maintenant déplacer le <Emph>poussin</Emph> de ta réserve vers la case indiquée.</>,
+  { text: ["J'ai capturé ton ", green("poussin"), " avec mon ", red("éléphant"),
+           ". Essaie maintenant déplacer le ", green("poussin"), " de ta réserve vers la case indiquée."],
     action: {type: 'playerAction', from: 7, to: 7}
   },
-  { text: <>Bravo! C'est maintenant à moi de jouer.</>,
+  { text: ["Bravo! C'est maintenant à moi de jouer."],
     action: {type: 'machineAction', from: 4, to: 6}
   },
-  { text: <>Je déplace à nouveau mon <Warn>éléphant</Warn>. Ton <Emph>lion</Emph> est menacé.
-      Capture mon <Warn>éléphant</Warn> avec ton <Emph>lion</Emph> pour parer la menace</>,
+  { text: ["Je déplace à nouveau mon ", red("éléphant"), ". Ton ", green("lion"), " est menacé. Capture mon ",
+           red("éléphant"), " avec ton ", green("lion"), "pour parer la menace"],
     action: {type: 'playerAction', from: 1, to: 6}
   },
-  { text: <>Bravo! Tu as paré la menace! C'est maintenant à moi de jouer.</>,
+  { text: ["Bravo! Tu as paré la menace! C'est maintenant à moi de jouer."],
     action: {type: 'machineAction', from: 6, to: 3} 
   },
-  { text: <>Je déplace ma <Warn>girafe</Warn> menaçant ton <Emph>lion</Emph>. Tu ne peux pas la capturer car ton lion se ferait capturer au coup suivant.
-            Tu dois donc fuir. Déplace ton <Emph>lion</Emph> vers la case indiquée.</>,
+  { text: ["Je déplace ma ", red("girafe"), " menaçant ton ", green("lion"),
+            ". Tu ne peux pas la capturer car ton lion se ferait capturer au coup suivant. Tu dois donc fuir. Déplace ton ",
+            green("lion"), " vers la case indiquée."],
     action: {type: 'playerAction', from: 1, to: 10}
   },
-  { text: <>Bravo! C'est maintenant à moi de jouer.</>,
+  { text: ["Bravo! C'est maintenant à moi de jouer."],
     action: {type: 'machineAction', from: 3, to: 6} 
   },
-  { text: <>J'ai utilisé le <Emph>poussin</Emph> de ma réserve. Ton <Emph>éléphant</Emph> est bloqué, il va se faire prendre par mon <Warn>poussin</Warn>. Tu ne peux rien faire contre ça.
-            Déplace ta <Emph>girafé</Emph> à la case indiquée.
-          </>,
-    action: {type: 'playerAction', from: 2, to: 8} 
+  { text: ["J'ai utilisé le ", red("poussin"), " de ma réserve. Ton ", green("éléphant"),
+           " est bloqué, il va se faire prendre par mon ", red("poussin"),
+           ". Tu ne peux rien faire contre ça. Déplace ta ", green("girafe"), " à la case indiquée."],
+    action: {type: 'playerAction', from: 2, to: 8}
   },
-  { text: <>Bravo! C'est maintenant à moi de jouer.</>,
+  { text: ["Bravo! C'est maintenant à moi de jouer."],
     action: {type: 'machineAction', from: 3, to: 9} 
-  },
-  { text: <>Mon <Warn>poussin</Warn> est arrivé sur la dernière rangée, il  est promu en <Warn>poule</Warn>. Cette poule est très dangereuse vu ses mouvements autorisés.
-            Dépèche-toi de la capturer.
-          </>,
+  },  
+  { text: ["Mon ", red("poussin"), " est arrivé sur la dernière rangée, il  est promu en ", red("poule"),
+          ". Cette poule est très dangereuse vu ses mouvements autorisés. Dépèche-toi de la capturer."],
     action: {type: 'playerAction', from: 1, to: 9} 
   },
-  { text: <>Une fois une <Emph>poule</Emph> capturée, elle redevient un <Emph>poussin</Emph>. Tu ne peux pas directement promouvoir un poussin de la réserve en poule.</>,
+  { text: ["Une fois une ", blue("poule"), " capturée, elle redevient un ", blue("poussin"),
+          ". Tu ne peux pas directement promouvoir un poussin de la réserve en poule."],
     action: read 
   },
-  { text: <>Tu peux également gagner la partie en emmenant ton <Emph>lion</Emph> sur la dernière rangée.<br/>
-            Le lion ne doit pas pouvoir être immédiatement capturé par l'adversaire.</>,
+  { text: ["Tu peux également gagner la partie en emmenant ton ", green("lion"),
+          " sur la dernière rangée. Le lion ne doit pas pouvoir être immédiatement capturé par l'adversaire."],
     action: read
   },
-  { text: <>Bravo! Tu as complété le tutoriel! Tu peux commencer à jouer en cliquant sur <Emph>Nouvelle partie</Emph>.</>,
+  { text: ["Bravo! Tu as complété le tutoriel! Tu peux commencer à jouer en cliquant sur ", blue("Nouvelle partie"), "."],
     action: read 
   },
 ]

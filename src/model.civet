@@ -27,6 +27,8 @@ export type State =
   dialog: "newgame" | "rules" | "credits" | null
   tutorialStep: null | number
 
+export type Message = (String | ["R" | "G" | "B", string])[]
+
 export function newConfig(): Config
   adversary: "level1"
   machineStarts: false

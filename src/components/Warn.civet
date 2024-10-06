@@ -1,3 +1,0 @@
-Warn := (props: {children: string}) => <span class="text-red-500 font-bold">{props.children}
-
-export default Warn

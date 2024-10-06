@@ -1,3 +1,5 @@
-Emph := (props: {children: string}) => <span class="text-green-500 font-bold">{props.children}
+export Green := (props: {children: string}) => <span class="text-green-500 font-bold">{props.children}
+export Red := (props: {children: string}) => <span class="text-red-500 font-bold">{props.children}
+export Blue := (props: {children: string}) => <span class="text-blue-500 font-bold">{props.children}
 
-export default Emph
+export Emph=Green

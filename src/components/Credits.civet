@@ -1,5 +1,5 @@
 import { Component } from "solid-js"
-import Emph from "./Emph.civet"
+import { Emph } from "./Emph.civet"
 
 Rules: Component<{closeDialog: () => void}> := (props) =>
   <div class="dialog-title">Règles de Catch the lion
