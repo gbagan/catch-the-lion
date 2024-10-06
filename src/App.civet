@@ -2,7 +2,6 @@ import { batch, Component } from 'solid-js'
 import { createStore, produce } from "solid-js/store"
 import { condition2Win, Config, drawGame, initPieces, initState } from './model.civet'
 import { delay, last } from './util.civet'
-//import Worker from './worker.civet?worker'
 import { tutorial } from './tutorial.civet'
 import Board from './components/Board.civet'
 import Info from './components/Info.civet'
@@ -23,7 +22,7 @@ App: Component := =>
     action := tutorial[state.tutorialStep].action
     action.type === "playerAction" ? [action.from, action.to] as [number, number] : null
 
-  worker := new Worker(new URL('./worker.civet.tsx', import.meta.url))
+  worker := new Worker(new URL('./worker.civet.tsx', import.meta.url), { type: 'module' })
 
   function workerTask(data: any): Promise<[number, number]>
     new Promise((resolve) =>
@@ -156,8 +155,8 @@ App: Component := =>
   tutorialPlay := (from: number, to: number) =>
     if state.tutorialStep === null
       return
-    wanted := tutorial[state.tutorialStep].action
-    if wanted.type !== 'playerAction' || from !== wanted.from || to !== wanted.to
+    required := tutorial[state.tutorialStep].action
+    if required.type !== 'playerAction' || from !== required.from || to !== required.to
       return
 
     batch =>
@@ -181,7 +180,7 @@ App: Component := =>
         turn={state.turn}
         lastMove={last(state.played)?.move ?? null}
         canPlay={!state.isThinking && state.outcome === null}
-        wantedMove={null}
+        requiredMove=null
         play={play}
       />
     else
@@ -190,7 +189,7 @@ App: Component := =>
         turn={state.turn}
         lastMove={last(state.played)?.move ?? null}
         canPlay={tutorial[state.tutorialStep].action.type === 'playerAction'}
-        wantedMove={wantedMove()}
+        requiredMove=wantedMove()
         play={tutorialPlay}
       />
     }

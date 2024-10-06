@@ -1,9 +1,6 @@
 import { alphabeta } from "./ai2.civet"
 
-console.log "worker started"
-
 onmessage = (e) =>
-  console.log("worker received", e.data)
   {pieces, turn, adversary} := e.data
   depth := switch adversary
     when 'level1': 2

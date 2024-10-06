@@ -78,7 +78,7 @@ const SuggestionArrow: SuggestionArrowComponent = (props) =>
     stroke="red"
     stroke-width="50"
     class="pointer-events-none animate-lion-arrow"
-     marker-end="url(#arrowhead)"
+    marker-end="url(#arrowhead)"
   />
 
 type BoardComponent = Component<{
@@ -86,11 +86,11 @@ type BoardComponent = Component<{
   turn: 0 | 1
   lastMove: [number | null, number] | null
   canPlay: boolean
-  wantedMove: [number, number] | null
+  requiredMove: [number, number] | null
   play: (from: number, to: number) => void
 }>
 
-const Board: BoardComponent = (props) =>
+Board: BoardComponent := (props) =>
   let svgEl!: SVGSVGElement
 
   [selectedPiece, setSelectedPiece] := createSignal<number | null>(null)
@@ -116,48 +116,44 @@ const Board: BoardComponent = (props) =>
   pointerDown := (pos: number, e: PointerEvent) =>
     if !props.canPlay || props.pieces[pos].owner !== props.turn
       return
-    if e.currentTarget
-    then (e.currentTarget as Element).releasePointerCapture(e.pointerId)
-    batch(=>
+    (e.currentTarget as Element).setPointerCapture e.pointerId
+    (e.currentTarget as Element).releasePointerCapture e.pointerId
+    batch =>
       setSelectedPiece pos
       setLastSelectedPiece pos
-      setPointerPosition(getPointerPosition e)
-    )
+      setPointerPosition getPointerPosition(e)
 
   pointerMove := (e: PointerEvent) =>
-    setPointerPosition(getPointerPosition e)
+    setPointerPosition getPointerPosition(e)
 
-  pointerUp := (to: number) =>
-    batch(=>
-      setPointerPosition(null)
+  pointerUp := (to: number, e: PointerEvent) =>
+    e.stopPropagation()
+    batch =>
+      setPointerPosition null
       from := selectedPiece()
       if from !== null
-        setSelectedPiece(null)
-        props.play(from, to)
-    )
+        setSelectedPiece null
+        props.play from, to
     setTimeout(=> setLastSelectedPiece(null), 500)
 
   cancelMove := =>
-    batch(=>
+    batch =>
       setPointerPosition null
       setSelectedPiece null
-    )
 
   <div class="w-[42rem] z-20">
     <svg
       viewBox="0 0 1600 1680"
       class="select-none touch-none"
-      ref={svgEl}
-      onPointerMove={pointerMove}
-      onPointerCancel={cancelMove}
-      onPointerLeave={cancelMove}
-      onPointerUp={cancelMove}
+      ref=svgEl
+      onPointerMove=pointerMove
+      onPointerCancel=cancelMove
+      onPointerLeave=cancelMove
+      onPointerUp=cancelMove
     >
       <defs>
         <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="3" refY="2" orient="auto">
           <polygon points="0 0, 4 2, 0 4" fill="red" />
-        </marker>
-      </defs>
       <symbol id="twice" viewBox="0 0 40 40">
         <rect x="0" y="0" width="40" height="40" fill="red" />
         <text x="20" y="30" fill="white" font-size="30px" font-weight="bold" text-anchor="middle">2
@@ -209,7 +205,7 @@ const Board: BoardComponent = (props) =>
             height=SQUARE_HEIGHT-20
             stroke-width="20"
             stroke={moves().includes(i()) ? "lightgreen" : "transparent"}
-            classList={ "pointer-events-none": !moves().includes(i()) }
+            classList={"pointer-events-none": !moves().includes(i())}
             fill={played(i()) ? "rgba(0, 255, 0, 0.3)" : "transparent"}
             onPointerUp={[pointerUp, i()]}
           />
@@ -240,19 +236,15 @@ const Board: BoardComponent = (props) =>
             href="#twice"
             width="50"
             height="50"
-            classList={{ "opacity-0": !ownBothPieces(i(), 0) }}
-            style={{
-              transform: `translate(140px, ${1610 - 200 * j}px)`,
-            }}
+            classList={"opacity-0": !ownBothPieces(i(), 0)}
+            style={transform: `translate(140px, ${1610 - 200 * j}px)`}
           />
           <use
             href="#twice"
             width="50"
             height="50"
-            classList={{ "opacity-0": !ownBothPieces(i(), 1) }}
-            style={{
-              transform: `translate(1540px, ${240 + 200 * j}px)`
-            }}
+            classList={"opacity-0": !ownBothPieces(i(), 1)}
+            style={transform: `translate(1540px, ${240 + 200 * j}px)`}
           />
         }
       {pointerPosition() && selectedPiece() !== null &&
@@ -261,15 +253,15 @@ const Board: BoardComponent = (props) =>
           y=-TILE_SIZE/2
           width=TILE_SIZE
           height=TILE_SIZE
-          class="pointer-events-none"
-          style={ transform: selectedPieceTransform(pointerPosition()!, props.pieces[selectedPiece()!]) }
+          pointer-events="none"
+          style={transform: selectedPieceTransform(pointerPosition()!, props.pieces[selectedPiece()!])}
           href=`#piece-${props.pieces[selectedPiece()!].type}`
         />
       }
-      {props.wantedMove && selectedPiece() === null &&
+      {props.requiredMove && selectedPiece() === null &&
         <SuggestionArrow
-          from=props.wantedMove[0]
-          to=props.wantedMove[1]
+          from=props.requiredMove[0]
+          to=props.requiredMove[1]
           pieces=props.pieces
         />
       }
