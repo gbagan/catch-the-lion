@@ -1,11 +1,12 @@
+import { Adversary } from "./model.civet"
 import { alphabeta } from "./ai2.civet"
 
 onmessage = (e) =>
   {pieces, turn, adversary} := e.data
-  depth := switch adversary
-    when 'level1': 2
-    when 'level2': 4
-    when 'level3': 9
+  depth := switch adversary as Adversary
+    'level1' 2
+    'level2' 4
+    'level3' 9
     else 2
   output := alphabeta depth, turn, -Infinity, +Infinity, pieces          
   postMessage output[1]

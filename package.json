@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@danielx/civet": "^0.7.32",
+    "@danielx/civet": "^0.7.33",
     "@types/lodash.maxby": "^4.6.9",
     "@types/lodash.minby": "^4.6.9",
     "@types/lodash.range": "^3.2.9",
