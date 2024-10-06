@@ -1,9 +1,9 @@
 import { batch, Component } from 'solid-js'
 import { createStore, produce } from "solid-js/store"
-import { condition2Win, Config, drawGame, initPieces, initState } from './model'
+import { condition2Win, Config, drawGame, initPieces, initState } from './model.civet'
 import { delay, last } from './util.civet'
-import Worker from './worker?worker'
-import { tutorial } from './tutorial'
+import Worker from './worker.civet?worker'
+import { tutorial } from './tutorial.civet'
 import Board from './components/Board.civet'
 import Info from './components/Info.civet'
 import NewGame from './components/NewGame.civet'
@@ -15,12 +15,12 @@ App: Component := =>
   let moveAudio!: HTMLAudioElement
   let captureAudio!: HTMLAudioElement
 
-  [state, setState] := createStore(initState())
+  [state, setState] := createStore initState()
 
   wantedMove := =>
     if state.tutorialStep === null
       return null
-    action := tutorial[state.tutorialStep].action;
+    action := tutorial[state.tutorialStep].action
     action.type === "playerAction" ? [action.from, action.to] as [number, number] : null
 
   worker := new Worker()
@@ -64,15 +64,15 @@ App: Component := =>
     [[from2, to2]] := await Promise.all([workerTask(data), delay(1500)])
     batch(() =>
       setState("isThinking", false)
-      playAux(from2, to2);
+      playAux(from2, to2)
     )
 
   play := async (from: number, to: number) =>
     if state.config.adversary === 'human'
-      playAux(from, to);
+      playAux(from, to)
     else
       batch(=>
-        playAux(from, to);
+        playAux(from, to)
         if state.outcome === null
           setState("isThinking", true)
       )
@@ -145,7 +145,7 @@ App: Component := =>
   tutorialNext := () =>
     if state.tutorialStep === null
       return
-    action := tutorial[state.tutorialStep].action;
+    action := tutorial[state.tutorialStep].action
     if action.type === 'playerAction'
       return
     batch =>
@@ -156,7 +156,7 @@ App: Component := =>
   tutorialPlay := (from: number, to: number) =>
     if state.tutorialStep === null
       return
-    wanted := tutorial[state.tutorialStep].action;
+    wanted := tutorial[state.tutorialStep].action
     if wanted.type !== 'playerAction' || from !== wanted.from || to !== wanted.to
       return
 

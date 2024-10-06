@@ -22,4 +22,4 @@ Rules: Component<{closeDialog: () => void}> := (props) =>
   <div class="dialog-buttons">
     <button class="btn" onClick={props.closeDialog}>OK
 
-export default Rules;
+export default Rules

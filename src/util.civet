@@ -1,11 +1,11 @@
 export last := <A>(xs: A[]) => xs.length === 0 ? null : xs[xs.length - 1]
 
-export const countIf = <A>(xs: A[], f: (x: A) => boolean) =>
-  res .= 0;
-  n := xs.length;
-  for (let i = 0; i < n; i++)
-    if (f(xs[i]))
-      res++;
+export function countIf<A>(xs: A[], f: (x: A) => boolean): number
+  res .= 0
+  n := xs.length
+  for i .= 0; i < n; i++
+    if f(xs[i])
+      res++
   res
 
 export function sample<A>(arr: A[]): A | null

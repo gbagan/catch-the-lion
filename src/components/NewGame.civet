@@ -1,6 +1,6 @@
 import { Component } from "solid-js"
-import { Adversary, Config } from "../model"
 import { createStore } from "solid-js/store"
+import { Adversary, Config } from "../model.civet"
 
 type NewGameComponent = Component<{
   config: Config,
@@ -37,4 +37,4 @@ NewGame: NewGameComponent := (props) =>
     <button class="btn" onClick={props.closeDialog}>Annuler
     <button class="btn" onClick={[props.newGame, config]}>OK
 
-export default NewGame;
+export default NewGame

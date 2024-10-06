@@ -1,6 +1,6 @@
 import { JSXElement } from "solid-js"
 import Emph from "./components/Emph.civet"
-import Warn from "./components/Warn"
+import Warn from "./components/Warn.civet"
 
 export type TutorialAction = {
   type: 'read'

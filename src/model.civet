@@ -1,4 +1,4 @@
-import { countIf } from "./util";
+import { countIf } from './util.civet';
 
 export type PieceType = 'L' | 'G' | 'C' | 'E' | 'H'
 type Position = number | null

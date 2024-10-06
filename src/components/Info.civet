@@ -1,15 +1,15 @@
 import { Component, createMemo, createSignal, JSXElement, onCleanup, onMount } from "solid-js"
 import { Transition } from "solid-transition-group"
-import { Adversary } from "../model"
-import { delay } from "../util"
-import { tutorial } from "../tutorial"
+import { Adversary } from "../model.civet"
+import { delay } from "../util.civet"
+import { tutorial } from "../tutorial.civet"
 import Emph from "./Emph.civet"
 
 messages: [JSXElement, number][] := [
-  [<>Bienvenue sur l'appli' <Emph>Catch the lion</Emph>.</>, 3000],
-  [<><Emph>Catch the lion</Emph> connu en japonais sous le nom <Emph>Dobutsu Shogi</Emph> est une variante pour enfants du Shogi.</>, 5000],
-  [<>Le jeu a été entièrement résolu par ordinateur. Il existe <Emph>1 567 925 964</Emph> configurations possibles.</>, 5000],
-  [<>Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le <Emph>second</Emph> joueur.</>, 5000],
+  [<>Bienvenue sur l'appli' <Emph>Catch the lion</Emph>.</>, 3000]
+  [<><Emph>Catch the lion</Emph> connu en japonais sous le nom <Emph>Dobutsu Shogi</Emph> est une variante pour enfants du Shogi.</>, 5000]
+  [<>Le jeu a été entièrement résolu par ordinateur. Il existe <Emph>1 567 925 964</Emph> configurations possibles.</>, 5000]
+  [<>Si les deux joueurs jouent de manière optimale, la victoire est assurée pour le <Emph>second</Emph> joueur.</>, 5000]
   [<>Pour apprendre les règles, tu peux clicker sur <Emph>Tutoriel</Emph>.</>, 3000]
 ]
 
@@ -29,7 +29,7 @@ const Info: InfoComponent = (props) =>
   onMount(async () =>
     i .= 0
     while true
-      d := messages[i][1];
+      d := messages[i][1]
       setPeriodicMessage messages[i][0]
       await delay d
       setPeriodicMessage null

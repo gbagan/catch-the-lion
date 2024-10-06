@@ -1,14 +1,14 @@
-import { batch, Component, createMemo, createSignal, Index } from "solid-js";
-import { movesDict, Piece, PieceType, possibleMoves } from "../model";
-import range from "lodash.range";
+import { batch, Component, createMemo, createSignal, Index } from "solid-js"
+import { movesDict, Piece, PieceType, possibleMoves } from "../model.civet"
+import range from "lodash.range"
 
-type Position = { x: number, y: number };
+type Position = { x: number, y: number }
 
-const BOARD_START_X = 320;
-const BOARD_START_Y = 200;
-const SQUARE_WIDTH = 330;
-const SQUARE_HEIGHT = 325; 
-const TILE_SIZE = 260;
+BOARD_START_X := 320
+BOARD_START_Y := 200
+SQUARE_WIDTH := 330
+SQUARE_HEIGHT := 325 
+TILE_SIZE := 260
 
 PIECE_COLOR: Record<PieceType, string> :=
   L: "#fbc0bf"
@@ -25,7 +25,7 @@ pieceIndex: Record<PieceType, number> :=
   H: 4
 
 transformPiece := (piece: Piece) =>
-  position := piece.position;
+  position := piece.position
   let x
   let y
   let scale
@@ -54,7 +54,7 @@ type SuggestionArrowComponent = Component<{
 
 const SuggestionArrow: SuggestionArrowComponent = (props) =>
   coords := createMemo(=>
-    piece := props.pieces[props.from];
+    piece := props.pieces[props.from]
 
     x2 := BOARD_START_X + SQUARE_WIDTH / 2 + SQUARE_WIDTH * (props.to % 3)
     y2 := BOARD_START_Y + SQUARE_HEIGHT / 2 + SQUARE_HEIGHT * (props.to / 3 | 0)
@@ -165,7 +165,7 @@ const Board: BoardComponent = (props) =>
         <symbol id={`piece-${i}`} viewBox="0 0 50 50">
           <rect x="0.5" y="0.5" width="49" height="49" rx="5" ry="5" fill={PIECE_COLOR[i as PieceType]} stroke="black" stroke-width="1" />
           <image x="6" y="6" width="38" height="38" href={`./piece-${i}.webp`} />
-          {movesDict[i as PieceType].map(([dx, dy]) =>
+          {movesDict[i as PieceType].map([dx, dy] =>
             <circle
               cx={25 + 20 * dx}
               cy={25 - 20 * dy}
@@ -233,7 +233,7 @@ const Board: BoardComponent = (props) =>
             filter="drop-shadow(16px 16px 16px gray)"
           />
         }
-      </Index>
+
       <Index each={[3, 0, 2]}>
         {(i, j) =>
           <use
