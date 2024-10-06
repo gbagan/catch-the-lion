@@ -2,7 +2,7 @@ import { batch, Component } from 'solid-js'
 import { createStore, produce } from "solid-js/store"
 import { condition2Win, Config, drawGame, initPieces, initState } from './model.civet'
 import { delay, last } from './util.civet'
-import Worker from './worker.civet?worker'
+//import Worker from './worker.civet?worker'
 import { tutorial } from './tutorial.civet'
 import Board from './components/Board.civet'
 import Info from './components/Info.civet'
@@ -23,7 +23,7 @@ App: Component := =>
     action := tutorial[state.tutorialStep].action
     action.type === "playerAction" ? [action.from, action.to] as [number, number] : null
 
-  worker := new Worker()
+  worker := new Worker(new URL('./worker.civet.tsx', import.meta.url))
 
   function workerTask(data: any): Promise<[number, number]>
     new Promise((resolve) =>

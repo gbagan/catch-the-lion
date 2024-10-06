@@ -11,6 +11,14 @@ export default defineConfig({
     }),
     solidPlugin(),
   ],
+  worker: {
+    plugins: () => [
+      civetPlugin({
+        ts: "preserve",
+      }),
+    ],
+    // format: "es",  // if using { type: 'module' }
+  },
   build: {
     target: 'esnext',
   },
