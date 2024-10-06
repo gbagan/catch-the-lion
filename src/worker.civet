@@ -7,5 +7,5 @@ onmessage = (e) =>
     when 'level2': 4
     when 'level3': 9
     else 2
-  output := alphabeta(depth, turn, -Infinity, +Infinity, pieces)[1]          
-  postMessage(output)
+  output := alphabeta depth, turn, -Infinity, +Infinity, pieces          
+  postMessage output[1]

@@ -18,15 +18,15 @@ type InfoComponent = Component<{
   adversary: Adversary
   isThinking: boolean
   tutorialStep: number | null
-  tutorialNext: () => void
-  tutorialPred: () => void
+  tutorialNext: => void
+  tutorialPred: => void
 }>
 
 const Info: InfoComponent = (props) =>
   [periodicMessage, setPeriodicMessage] := createSignal<JSXElement | null> ""
   stop .= false
 
-  onMount(async () =>
+  onMount async () =>
     i .= 0
     while true
       d := messages[i][1]
@@ -37,13 +37,12 @@ const Info: InfoComponent = (props) =>
       if stop
         break
       await delay 1500
-  )
 
   onCleanup(() =>
     stop = true
   )
 
-  message := createMemo( =>
+  message := createMemo =>
     if props.tutorialStep !== null
     then tutorial[props.tutorialStep].text
     else if props.outcome !== null
@@ -58,7 +57,6 @@ const Info: InfoComponent = (props) =>
     )
     else
       periodicMessage()
-  )
 
   girlExpression := createMemo =>
     if props.isThinking
@@ -73,20 +71,12 @@ const Info: InfoComponent = (props) =>
 
   <div class=`z-20 relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`>
     <Transition
-      onEnter={(el, done) => {
-        a := el.animate([
-          { opacity: 0 },
-          { opacity: 1 }], {
-          duration: 500
-        })
+      onEnter={(el, done) =>
+        a := el.animate [{ opacity: 0 }, { opacity: 1 }], {duration: 500}
         a.finished.then(done)
-      }}
+      }
       onExit={(el, done) =>
-        a := el.animate([
-          { opacity: 1 },
-          { opacity: 0 }], {
-          duration: 500
-        })
+        a := el.animate [{ opacity: 1 }, { opacity: 0 }], {duration: 500}
         a.finished.then(done)
       }
     >

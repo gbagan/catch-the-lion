@@ -1,4 +1,4 @@
-import { movesDict, Piece, PieceType } from "./model"
+import { movesDict, Piece, PieceType } from "./model.civet"
 
 pieceValue: Record<PieceType, number> :=
   L: 1000
@@ -9,9 +9,9 @@ pieceValue: Record<PieceType, number> :=
 
 function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][]
   result: [number, number][] := []
-  board := new Array(12)
+  board := new Array 12
   board.fill 0
-  for const piece2 of pieces
+  for piece2 of pieces
     if piece2.position !== null
       board[piece2.position] = piece2.owner + 1
 
@@ -28,7 +28,7 @@ function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][]
       x := piece.position % 3
       y := piece.position / 3 | 0
       moves := movesDict[piece.type]
-      for const move of moves
+      for move of moves
         [dx, dy] := turn ? [move[0], move[1]] : [-move[0], -move[1]]
         x2 := x + dx
         y2 := y + dy

@@ -17,8 +17,8 @@ export type TutorialAction = {
 const read: TutorialAction = {type: 'read'}
 
 export type Tutorial = {
-  text: JSXElement,
-  action: TutorialAction,
+  text: JSXElement
+  action: TutorialAction
 }[]
 
 export const tutorial: Tutorial = [

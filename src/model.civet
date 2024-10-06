@@ -95,12 +95,12 @@ pieceEq := (piece1: Piece, piece2: Piece) =>
 
 piecesEq := (pieces1: Piece[], pieces2: Piece[]) =>
   for i .= 0; i < 8; i++
-    if !pieceEq(pieces1[i], pieces2[i])
+    if !pieceEq pieces1[i], pieces2[i]
       return false
   true
 
 export drawGame := (pieces: Piece[], played: Played) =>
-  countIf(played, (p) => piecesEq(pieces, p.pieces)) >= 2
+  countIf(played, (p) => piecesEq pieces, p.pieces) >= 2
 
 export condition2Win := (pieces: Piece[], turn: 0 | 1) =>
   lionPosition := pieces[turn ? 5 : 1].position
