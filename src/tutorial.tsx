@@ -89,5 +89,4 @@ export const tutorial: Tutorial = [
   { text: <>Bravo! Tu as complété le tutoriel! Tu peux commencer à jouer en cliquant sur <Emph>Nouvelle partie</Emph>.</>,
     action: read 
   },
-
 ]

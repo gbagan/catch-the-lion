@@ -1,0 +1,10 @@
+import { alphabeta } from "./ai2";
+
+onmessage = (e) =>
+  {pieces, turn, adversary} := e.data
+  depth := switch adversary
+    when 'level1': 2
+    when 'level2': 4
+    when 'level3': 9
+  output := alphabeta(depth, turn, -Infinity, +Infinity, pieces)[1]          
+  postMessage(output)
