@@ -1,4 +1,4 @@
-import { alphabeta } from "./ai2"
+import { alphabeta } from "./ai2.civet"
 
 onmessage = (e) =>
   {pieces, turn, adversary} := e.data
@@ -6,5 +6,6 @@ onmessage = (e) =>
     when 'level1': 2
     when 'level2': 4
     when 'level3': 9
+    else 2
   output := alphabeta(depth, turn, -Infinity, +Infinity, pieces)[1]          
   postMessage(output)
