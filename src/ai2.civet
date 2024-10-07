@@ -40,7 +40,7 @@ function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][]
 
 function playMove(pieces: Piece[], [from, to]: [number, number]): Piece[]
   { owner, type, position } := pieces[from]
-  piecesCopy := pieces.map((piece) => ({ ...piece }))
+  piecesCopy := pieces.map { ...& }
   j := pieces.findIndex((piece) => piece.position === to)
   if j >= 0
     piecesCopy[j].position = null

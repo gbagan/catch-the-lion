@@ -154,11 +154,11 @@ Board: BoardComponent := (props) =>
       <symbol #twice viewBox="0 0 40 40">
         <rect x="0" y="0" width="40" height="40" fill="red" />
         <text x="20" y="30" fill="white" font-size="30px" font-weight="bold" text-anchor="middle">2
-      {['L', 'G', 'E', 'C', 'H'].map((i) =>
+      {['L', 'G', 'E', 'C', 'H'].map (i) =>
         <symbol id=`piece-${i}` viewBox="0 0 50 50">
           <rect x="0.5" y="0.5" width="49" height="49" rx="5" ry="5" fill={PIECE_COLOR[i as PieceType]} stroke="black" stroke-width="1" />
           <image x="6" y="6" width="38" height="38" href={`./piece-${i}.webp`} />
-          {movesDict[i as PieceType].map([dx, dy] =>
+          {movesDict[i as PieceType].map [dx, dy] =>
             <circle
               cx={25 + 20 * dx}
               cy={25 - 20 * dy}
@@ -166,10 +166,10 @@ Board: BoardComponent := (props) =>
               stroke="black"
               fill="red"
             />
-          )}
-      )}
+          }
+      }
       <image x="200" y="-500" width="1200" height="2580" href="./board4.webp" preserveAspectRatio="xMidYMid"/>
-      {[0..4].map((i) =>
+      {[0..4].map (i) =>
         <line
           x1={BOARD_START_X}
           y1={BOARD_START_Y + i * SQUARE_HEIGHT}
@@ -180,8 +180,8 @@ Board: BoardComponent := (props) =>
           stroke-dasharray={`${SQUARE_WIDTH / 8} ${SQUARE_WIDTH / 8}`}
           stroke-dashoffset={SQUARE_WIDTH / 16}
         />
-      )}
-      {[0..3].map((i) =>
+      }
+      {[0..3].map (i) =>
         <line
           x1={BOARD_START_X + i * SQUARE_WIDTH}
           y1={BOARD_START_Y}
@@ -192,21 +192,20 @@ Board: BoardComponent := (props) =>
           stroke-dasharray=`${SQUARE_HEIGHT / 8} ${SQUARE_HEIGHT / 8}`
           stroke-dashoffset=SQUARE_HEIGHT/16
         />
-      )}
-      <Index each=[0...12]>
-        {(i) =>
-          <rect
-            x={BOARD_START_X + 10 + SQUARE_WIDTH * (i() % 3)}
-            y={BOARD_START_Y + 10 + SQUARE_HEIGHT * (i() / 3 | 0)}
-            width=SQUARE_WIDTH-20
-            height=SQUARE_HEIGHT-20
-            stroke-width="20"
-            stroke={moves().includes(i()) ? "lightgreen" : "transparent"}
-            classList={"pointer-events-none": !moves().includes(i())}
-            fill={played(i()) ? "rgba(0, 255, 0, 0.3)" : "transparent"}
-            onPointerUp=[pointerUp, i()]
-          />
-        }
+      }
+      {[0...12].map (i) =>
+        <rect
+          x={BOARD_START_X + 10 + SQUARE_WIDTH * (i % 3)}
+          y={BOARD_START_Y + 10 + SQUARE_HEIGHT * (i / 3 | 0)}
+          width=SQUARE_WIDTH-20
+          height=SQUARE_HEIGHT-20
+          stroke-width="20"
+          stroke={if moves().includes(i) then "lightgreen" else "transparent"}
+          classList={"pointer-events-none": !moves().includes(i)}
+          fill={if played(i) then "rgba(0, 255, 0, 0.3)" else "transparent"}
+          onPointerUp=[pointerUp, i]
+        />
+      }
 
       <Index each=props.pieces>
         {(piece, i) =>
@@ -227,23 +226,22 @@ Board: BoardComponent := (props) =>
           />
         }
 
-      <Index each=[3, 0, 2]>
-        {(i, j) =>
-          <use
-            href="#twice"
-            width="50"
-            height="50"
-            classList={"opacity-0": !ownBothPieces(i(), 0)}
-            style={transform: `translate(140px, ${1610 - 200 * j}px)`}
-          />
-          <use
-            href="#twice"
-            width="50"
-            height="50"
-            classList={"opacity-0": !ownBothPieces(i(), 1)}
-            style={transform: `translate(1540px, ${240 + 200 * j}px)`}
-          />
-        }
+      {[3, 0, 2].map (i, j) =>
+        <use
+          href="#twice"
+          width="50"
+          height="50"
+          classList={"opacity-0": !ownBothPieces(i, 0)}
+          style={transform: `translate(140px, ${1610 - 200 * j}px)`}
+        />
+        <use
+          href="#twice"
+          width="50"
+          height="50"
+          classList={"opacity-0": !ownBothPieces(i, 1)}
+          style={transform: `translate(1540px, ${240 + 200 * j}px)`}
+        />
+      }
       {pointerPosition() && selectedPiece() !== null &&
         <use
           x=-TILE_SIZE/2

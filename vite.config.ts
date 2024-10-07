@@ -16,7 +16,6 @@ export default defineConfig({
         ts: "preserve",
       }),
     ],
-    // format: "es",  // if using { type: 'module' }
   },
   build: {
     target: 'esnext',
