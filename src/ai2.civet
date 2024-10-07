@@ -33,7 +33,7 @@ function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][]
         x2 := x + dx
         y2 := y + dy
         if x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4
-          index := 3 * y2 + x2;
+          index := 3 * y2 + x2
           if board[index] !== piece.owner + 1
             result.push([i, index])
   result
@@ -71,10 +71,10 @@ function evaluatePosition(pieces: Piece[]): number
       moves := movesDict[piece.type]
       for const move of moves
         [dx, dy] := piece.owner === 1 ? [move[0], move[1]] : [-move[0], -move[1]]
-        x2 := x + dx;
-        y2 := y + dy;
+        x2 := x + dx
+        y2 := y + dy
         if x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4
-          index := 3 * y2 + x2;
+          index := 3 * y2 + x2
           if (board[index] !== piece.owner + 1)
             result += 0.1 * (piece.owner ? -1 : 1)
   result
@@ -90,7 +90,7 @@ export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: numbe
   else if pieces[1].position === null
     return [-100000-depth, bestMove]
   else if pieces[5].position === null
-    return [100000+depth, bestMove];
+    return [100000+depth, bestMove]
   else if turn && pieces[5].position > 8
     return [-100000-depth, bestMove]
   else if turn && pieces[1].position < 3

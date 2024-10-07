@@ -84,7 +84,7 @@ App: Component := =>
       return
 
     setState(produce((state) =>
-      if state.played.length > 1
+      if state.played.length > 1 || state.played.length === 1 && state.config.adversary === 'human'
         pieces := state.played.pop()!.pieces
         state.pieces = pieces
         state.turn = state.turn === 0 ? 1 : 0
@@ -125,7 +125,7 @@ App: Component := =>
       state.tutorialStep = null
     ))
     dialog.close()
-    if state.config.machineStarts
+    if state.config.machineStarts && state.config.adversary !== "human"
       machinePlays()
 
   startTutorial := =>
@@ -145,7 +145,6 @@ App: Component := =>
         setState produce (state) =>
           state.pieces = state.played.pop()!.pieces
           state.turn = state.turn === 1 ? 0 : 1
-
 
   tutorialNext := =>
     if state.tutorialStep === null
