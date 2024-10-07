@@ -129,7 +129,7 @@ App: Component := =>
       machinePlays()
 
   startTutorial := =>
-    setState(produce((state) =>
+    setState produce (state) =>
       state.pieces = initPieces()
       state.played = []
       state.outcome = null
@@ -137,11 +137,17 @@ App: Component := =>
       state.isThinking = false
       state.dialog = null
       state.tutorialStep = 0
-    ))
 
-  tutorialPred := => setState("tutorialStep", (step) => Math.max(0, step! - 1))
+  tutorialPred := =>
+    batch =>
+      setState "tutorialStep", (step) => Math.max(0, step! - 1)
+      if tutorial[state.tutorialStep!].action.type !== 'read'
+        setState produce (state) =>
+          state.pieces = state.played.pop()!.pieces
+          state.turn = state.turn === 1 ? 0 : 1
 
-  tutorialNext := () =>
+
+  tutorialNext := =>
     if state.tutorialStep === null
       return
     action := tutorial[state.tutorialStep].action
@@ -158,7 +164,6 @@ App: Component := =>
     required := tutorial[state.tutorialStep].action
     if required.type !== 'playerAction' || from !== required.from || to !== required.to
       return
-
     batch =>
       playAux(from, to)
       setState("tutorialStep", (step) => Math.min(tutorial.length - 1, step! + 1))

@@ -15,4 +15,5 @@
 - [x] Cannot play or undo when the machine is thinking
 - [x] Color the squates to display the last move
 - [x] Add sounds
-- [ ] Manage the possibility of going back in the tutorial
+- [x] Manage the possibility of going back in the tutorial
+- [ ] AI tries to avoid draw game
