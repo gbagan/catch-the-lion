@@ -76,7 +76,7 @@ function evaluatePosition(pieces: Piece[]): number
         if x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4
           index := 3 * y2 + x2;
           if (board[index] !== piece.owner + 1)
-            result += 0.1 * (piece.owner ? -1 : 1) // mobilityWeight[piece.type];
+            result += 0.1 * (piece.owner ? -1 : 1)
   result
 
 export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: number, pieces: Piece[]): [number, [number, number]]
@@ -102,7 +102,7 @@ export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: numbe
       if turn === 0
         score = alphabeta(depth - 1, 1, alpha, beta, newPieces)[0]
         if (score > alpha)
-          alpha = score;
+          alpha = score
           bestMove = move
       else
         score = alphabeta(depth - 1, 0, alpha, beta, newPieces)[0]

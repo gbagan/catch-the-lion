@@ -16,7 +16,7 @@ App: Component := =>
 
   [state, setState] := createStore initState()
 
-  wantedMove := =>
+  requiredMove := =>
     if state.tutorialStep === null
       return null
     action := tutorial[state.tutorialStep].action
@@ -194,7 +194,7 @@ App: Component := =>
         turn={state.turn}
         lastMove={last(state.played)?.move ?? null}
         canPlay={tutorial[state.tutorialStep].action.type === 'playerAction'}
-        requiredMove=wantedMove()
+        requiredMove=requiredMove()
         play={tutorialPlay}
       />
     }
