@@ -4,8 +4,8 @@ import { Adversary, Config } from "../model.civet"
 
 type NewGameComponent = Component<{
   config: Config
-  closeDialog: () => void
-  newGame: (config: Config) => void
+  closeDialog: =>
+  newGame: (config: Config) =>
 }>
 
 adversaries := [["human", "Humain"], ["level1", "Débutant"], ["level2", "Moyen"], ["level3", "Difficile"]]
@@ -13,28 +13,29 @@ adversaries := [["human", "Humain"], ["level1", "Débutant"], ["level2", "Moyen"
 NewGame: NewGameComponent := (props) =>
   [config, setConfig] := createStore {...props.config}
 
-  <div class="dialog-title">Nouvelle partie
+  setAdversary := (name: string) => setConfig "adversary", name as Adversary
+  setMachineStarts := (b: boolean) => setConfig "machineStarts", b
+
+  <div .dialog-title>Nouvelle partie
   <div class="dialog-body grid grid-cols-20/80 gap-8">
-    <div class="text-bold text-lg">Adversaire
-    <div class="flex gap-4 text-lg">
+    <div .text-bold.text-lg>Adversaire
+    <div .flex.gap-4>
       {adversaries.map([name, fullname] =>
-        <button
-          class="togglebtn"
+        <button .togglebtn
           classList={"toggledbtn": name === config.adversary}
-          onClick={=> setConfig "adversary", name as Adversary}
+          onClick=[setAdversary, name]
         > {fullname}
       )}
-    <div class="text-bold text-lg">Qui commence
-    <div class="flex gap-4 text-lg">
+    <div .text-bold.text-lg>Qui commence
+    <div .flex.gap-4.text-lg>
       {[false, true].map((b) =>
-        <button
-          class="togglebtn"
+        <button .togglebtn
           classList={"toggledbtn": b === config.machineStarts}
-          onClick={=> setConfig "machineStarts", b}
+          onClick=[setMachineStarts, b]
         >{b ? "Machine" : "Humain"}
       )}
-  <div class="dialog-buttons">
-    <button class="btn" onClick=props.closeDialog>Annuler
-    <button class="btn" onClick=[props.newGame, config]>OK
+  <div .dialog-buttons>
+    <button .btn onClick=props.closeDialog>Annuler
+    <button .btn onClick=[props.newGame, config]>OK
 
 export default NewGame

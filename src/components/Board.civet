@@ -1,6 +1,5 @@
 import { batch, Component, createMemo, createSignal, Index } from "solid-js"
 import { movesDict, Piece, PieceType, possibleMoves } from "../model.civet"
-import range from "lodash.range"
 
 type Position = { x: number, y: number }
 
@@ -17,7 +16,7 @@ PIECE_COLOR: Record<PieceType, string> :=
   C: "#f0f4a3"
   H: "#eef1a5"
 
-pieceIndex: Record<PieceType, number> :=
+PIECE_INDEX: Record<PieceType, number> :=
   C: 0
   E: 1
   G: 2
@@ -31,7 +30,7 @@ transformPiece := (piece: Piece) =>
   let scale
   if position === null
     x = piece.owner ? 1500 : 100
-    y = piece.owner ? 200 + 200 * pieceIndex[piece.type] : 1570 - 200 * pieceIndex[piece.type]
+    y = piece.owner ? 200 + 200 * PIECE_INDEX[piece.type] : 1570 - 200 * PIECE_INDEX[piece.type]
     scale = 0.7
   else
     x = BOARD_START_X + SQUARE_WIDTH / 2 + SQUARE_WIDTH * (position % 3)
@@ -47,20 +46,20 @@ const selectedPieceTransform = (pos: Position, piece: Piece) =>
   `translate(${x}%, ${y}%) rotate(${rotate})`
 
 type SuggestionArrowComponent = Component<{
-  from: number,
-  to: number,
-  pieces: Piece[],
+  from: number
+  to: number
+  pieces: Piece[]
 }>
 
 const SuggestionArrow: SuggestionArrowComponent = (props) =>
-  coords := createMemo(=>
+  coords := createMemo =>
     piece := props.pieces[props.from]
 
     x2 := BOARD_START_X + SQUARE_WIDTH / 2 + SQUARE_WIDTH * (props.to % 3)
     y2 := BOARD_START_Y + SQUARE_HEIGHT / 2 + SQUARE_HEIGHT * (props.to / 3 | 0)
     if (piece.position === null)
       x1: "100"
-      y1: 1570 - 200 * pieceIndex[piece.type]
+      y1: 1570 - 200 * PIECE_INDEX[piece.type]
       x2: x2
       y2: y2
     else
@@ -68,7 +67,6 @@ const SuggestionArrow: SuggestionArrowComponent = (props) =>
       y1: BOARD_START_Y + SQUARE_HEIGHT / 2 + SQUARE_HEIGHT * (piece.position / 3 | 0)
       x2: x2
       y2: y2
-  )
 
   <line
     x1={coords().x1}
@@ -87,7 +85,7 @@ type BoardComponent = Component<{
   lastMove: [number | null, number] | null
   canPlay: boolean
   requiredMove: [number, number] | null
-  play: (from: number, to: number) => void
+  play: (from: number, to: number) =>
 }>
 
 Board: BoardComponent := (props) =>
@@ -134,7 +132,7 @@ Board: BoardComponent := (props) =>
       if from !== null
         setSelectedPiece null
         props.play from, to
-    setTimeout(=> setLastSelectedPiece(null), 500)
+    setTimeout => setLastSelectedPiece(null), 500
 
   cancelMove := =>
     batch =>
@@ -142,9 +140,8 @@ Board: BoardComponent := (props) =>
       setSelectedPiece null
 
   <div class="w-[42rem] z-20">
-    <svg
+    <svg .select-none.touch-none
       viewBox="0 0 1600 1680"
-      class="select-none touch-none"
       ref=svgEl
       onPointerMove=pointerMove
       onPointerCancel=cancelMove
@@ -152,13 +149,13 @@ Board: BoardComponent := (props) =>
       onPointerUp=cancelMove
     >
       <defs>
-        <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="3" refY="2" orient="auto">
+        <marker #arrowhead markerWidth="6" markerHeight="4" refX="3" refY="2" orient="auto">
           <polygon points="0 0, 4 2, 0 4" fill="red" />
-      <symbol id="twice" viewBox="0 0 40 40">
+      <symbol #twice viewBox="0 0 40 40">
         <rect x="0" y="0" width="40" height="40" fill="red" />
         <text x="20" y="30" fill="white" font-size="30px" font-weight="bold" text-anchor="middle">2
       {['L', 'G', 'E', 'C', 'H'].map((i) =>
-        <symbol id={`piece-${i}`} viewBox="0 0 50 50">
+        <symbol id=`piece-${i}` viewBox="0 0 50 50">
           <rect x="0.5" y="0.5" width="49" height="49" rx="5" ry="5" fill={PIECE_COLOR[i as PieceType]} stroke="black" stroke-width="1" />
           <image x="6" y="6" width="38" height="38" href={`./piece-${i}.webp`} />
           {movesDict[i as PieceType].map([dx, dy] =>
@@ -172,7 +169,7 @@ Board: BoardComponent := (props) =>
           )}
       )}
       <image x="200" y="-500" width="1200" height="2580" href="./board4.webp" preserveAspectRatio="xMidYMid"/>
-      {[0, 1, 2, 3, 4].map((i) =>
+      {[0..4].map((i) =>
         <line
           x1={BOARD_START_X}
           y1={BOARD_START_Y + i * SQUARE_HEIGHT}
@@ -184,7 +181,7 @@ Board: BoardComponent := (props) =>
           stroke-dashoffset={SQUARE_WIDTH / 16}
         />
       )}
-      {[0, 1, 2, 3].map((i) =>
+      {[0..3].map((i) =>
         <line
           x1={BOARD_START_X + i * SQUARE_WIDTH}
           y1={BOARD_START_Y}
@@ -196,7 +193,7 @@ Board: BoardComponent := (props) =>
           stroke-dashoffset=SQUARE_HEIGHT/16
         />
       )}
-      <Index each={range(0, 12)}>
+      <Index each=[0...12]>
         {(i) =>
           <rect
             x={BOARD_START_X + 10 + SQUARE_WIDTH * (i() % 3)}
@@ -207,11 +204,11 @@ Board: BoardComponent := (props) =>
             stroke={moves().includes(i()) ? "lightgreen" : "transparent"}
             classList={"pointer-events-none": !moves().includes(i())}
             fill={played(i()) ? "rgba(0, 255, 0, 0.3)" : "transparent"}
-            onPointerUp={[pointerUp, i()]}
+            onPointerUp=[pointerUp, i()]
           />
         }
 
-      <Index each={props.pieces}>
+      <Index each=props.pieces>
         {(piece, i) =>
           <use
             x=-TILE_SIZE/2
@@ -225,12 +222,12 @@ Board: BoardComponent := (props) =>
               "transition-transform duration-1000": lastSelectedPiece() !== i
               "opacity-0": i === selectedPiece() && pointerPosition() !== null
             }
-            onPointerDown={[pointerDown, i]}
+            onPointerDown=[pointerDown, i]
             filter="drop-shadow(16px 16px 16px gray)"
           />
         }
 
-      <Index each={[3, 0, 2]}>
+      <Index each=[3, 0, 2]>
         {(i, j) =>
           <use
             href="#twice"
