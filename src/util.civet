@@ -8,6 +8,15 @@ export function countIf<A>(xs: A[], f: (x: A) => boolean): number
       res++
   res
 
+export function partition<A>(xs: A[], f: (x: A) => boolean): [A[], A[]]
+  yes: A[] := []
+  no: A[] := []
+  n := xs.length
+  for i .= 0; i < n; i++
+    x := xs[i]
+    if f x then yes.push x else no.push x
+  [yes, no]
+
 export function sample<A>(arr: A[]): A | null
   arr[Math.random() * arr.length | 0] ?? null
 

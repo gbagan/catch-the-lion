@@ -36,7 +36,7 @@ App: Component := =>
     batch =>
       piecesCopy := state.pieces.map { ...& }
       setState "played", state.played.length, { pieces: piecesCopy, move: [fromPos, to] }
-      let j = state.pieces.findIndex (piece) => piece.position === to
+      let j = state.pieces.findIndex &.position === to
       if j >= 0 then
         captureAudio.play()
         setState "pieces", j, { position: null, owner }
@@ -47,18 +47,19 @@ App: Component := =>
         moveAudio.play()
       setState("pieces", from, "position", to)
       if type === 'C' && position !== null && (owner && to > 8 || !owner && to < 3) then
-        setState("pieces", from, "type", 'H')
+        setState "pieces", from, "type", 'H'
       if condition2Win(state.pieces, state.turn) then
-        setState("outcome", state.turn)
+        setState "outcome", state.turn
       if drawGame(state.pieces, state.played) then
-        setState("outcome", 2)
-      setState("turn", (turn) => turn === 0 ? 1 : 0)
+        setState "outcome", 2
+      setState "turn", (turn) => turn === 0 ? 1 : 0
 
   machinePlays := async =>
     data :=
       pieces: state.pieces.map { ...& }
       turn: state.turn
       adversary: state.config.adversary
+      played: state.played.map (p) => p.pieces.map { ...& }
     [[from2, to2]] := await Promise.all([workerTask(data), delay(1500)])
     batch(() =>
       setState("isThinking", false)

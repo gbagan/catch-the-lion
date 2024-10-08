@@ -1,11 +1,12 @@
-import { movesDict, Piece, PieceType } from "./model.civet"
+import { countIf, partition } from "./util.civet"
+import { movesDict, Piece, PieceType, piecesEq } from "./model.civet"
 
 pieceValue: Record<PieceType, number> :=
   L: 1000
-  H: 7
-  G: 5
-  E: 3
-  C: 1
+  H: 70
+  G: 50
+  E: 30
+  C: 10
 
 function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][]
   result: [number, number][] := []
@@ -41,11 +42,11 @@ function possibleMoves(pieces: Piece[], turn: 0 | 1): [number, number][]
 function playMove(pieces: Piece[], [from, to]: [number, number]): Piece[]
   { owner, type, position } := pieces[from]
   piecesCopy := pieces.map { ...& }
-  j := pieces.findIndex((piece) => piece.position === to)
+  j := pieces.findIndex &.position === to
   if j >= 0
     piecesCopy[j].position = null
     piecesCopy[j].owner = owner
-    if (piecesCopy[j].type === 'H')
+    if piecesCopy[j].type === 'H'
       piecesCopy[j].type = 'C'
   piecesCopy[from].position = to
   if type === 'C' && position !== null && (owner && to > 8 || !owner && to < 3)
@@ -58,7 +59,7 @@ function evaluatePosition(pieces: Piece[]): number
   board := new Array 12
   board.fill 0
   for const piece of pieces
-    result += (piece.owner ? -1 : 1) * pieceValue[piece.type]
+    result += (if piece.owner then -1 else 1) * pieceValue[piece.type]
     if piece.position !== null
       board[piece.position] = piece.owner + 1
 
@@ -76,39 +77,71 @@ function evaluatePosition(pieces: Piece[]): number
         if x2 >= 0 && x2 < 3 && y2 >= 0 && y2 < 4
           index := 3 * y2 + x2
           if (board[index] !== piece.owner + 1)
-            result += 0.1 * (piece.owner ? -1 : 1)
+            result += (if piece.owner then -1 else 1)
   result
 
-export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: number, pieces: Piece[]): [number, [number, number]]
+export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: number, pieces: Piece[]): number
   moves := possibleMoves(pieces, turn)
-  let score!: number
-  let bestMove!: [number, number]
 
   if depth === 0
-    score = evaluatePosition(pieces)
-    return [score, bestMove]
+    return evaluatePosition pieces
   else if pieces[1].position === null
-    return [-100000-depth, bestMove]
+    return -100000-depth
   else if pieces[5].position === null
-    return [100000+depth, bestMove]
+    return 100000+depth
   else if turn && pieces[5].position > 8
-    return [-100000-depth, bestMove]
+    return -100000-depth
   else if turn && pieces[1].position < 3
-    return [100000+depth, bestMove]
+    return 100000+depth
   else
-    for i .= 0; i < moves.length; i++
+    n := moves.length
+    for i .= 0; i < n; i++
       move := moves[i]
       newPieces := playMove(pieces, move)
       if turn === 0
-        score = alphabeta(depth - 1, 1, alpha, beta, newPieces)[0]
+        score := alphabeta(depth - 1, 1, alpha, beta, newPieces)
         if (score > alpha)
           alpha = score
-          bestMove = move
       else
-        score = alphabeta(depth - 1, 0, alpha, beta, newPieces)[0]
+        score := alphabeta(depth - 1, 0, alpha, beta, newPieces)
         if score < beta
           beta = score
-          bestMove = move
       if alpha >= beta
         break
-    return turn === 0 ? [alpha, bestMove] : [beta, bestMove]
+    if turn === 0 then alpha else beta
+
+export function computerMove(played: Piece[][], depth: number, turn: 0 | 1, pieces: Piece[]): [number, number]
+  alpha .= -Infinity
+  beta .= Infinity
+
+  pmoves := possibleMoves(pieces, turn).map (move) => [move, playMove(pieces, move)] as [[number, number], Piece[]]
+  [playedTwice, notPlayedTwice] := partition pmoves, [move, pieces] => countIf(played, (ps) => piecesEq ps, pieces) >= 1
+
+  bestMove: [number, number] | null .= null
+  for [move, newPieces] of notPlayedTwice
+    if turn === 0
+      score := alphabeta(depth - 1, 1, alpha, beta, newPieces)
+      if score > alpha
+        alpha = score
+        bestMove = move
+    else
+      score := alphabeta(depth - 1, 0, alpha, beta, newPieces)
+      if score < beta
+        beta = score
+        bestMove = move
+
+  if bestMove //&& (if turn then beta <= 0 else alpha >= 0)
+    return bestMove
+  
+  for [move, newPieces] of playedTwice
+    if turn === 0
+      score := alphabeta(depth - 1, 1, alpha, beta, newPieces)
+      if score > alpha
+        alpha = score
+        bestMove = move
+    else
+      score := alphabeta(depth - 1, 0, alpha, beta, newPieces)
+      if score < beta
+        beta = score
+        bestMove = move
+  bestMove!
