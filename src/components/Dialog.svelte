@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { Snippet } from "svelte";
   import Button from "./Button.svelte";
 
   type Props = {
     title: string;
     onOk?: () => void;
     onCancel?: () => void;
-    children: () => any;
+    children: Snippet;
   }
 
   const {title, onOk , onCancel, children}: Props = $props();

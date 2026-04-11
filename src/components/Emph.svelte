@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { Snippet } from "svelte";
+
   type Props = {
     color?: "red" | "blue" | "green";
-    children: () => any;
+    children: Snippet;
   }
 
   let { color="green", children }: Props = $props();

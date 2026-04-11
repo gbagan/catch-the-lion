@@ -99,6 +99,7 @@
 </script>
 
 <div class="container">
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <svg
     viewBox="0 0 1600 1680"
     bind:this={svgEl}

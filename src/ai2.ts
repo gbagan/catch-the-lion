@@ -3,13 +3,13 @@ import { movesDict, type Piece, type PieceType, piecesEq } from "./model";
 
 const pieceValue: Record<PieceType, number> = {
   L: 1000,
-  H: 70,
-  G: 50,
+  H: 60,
+  G: 30,
   E: 30,
   C: 10,
 };
 
-const possibleMoves = (pieces: Piece[], turn: 0 | 1) => {
+function possibleMoves(pieces: Piece[], turn: 0 | 1) {
   const result: [number, number][] = [];
   const board: number[] = new Array(12);
   board.fill(0);
@@ -52,7 +52,7 @@ const possibleMoves = (pieces: Piece[], turn: 0 | 1) => {
   return result
 }
 
-const playMove = (pieces: Piece[], [from, to]: [number, number]): Piece[] => {
+function playMove(pieces: Piece[], [from, to]: [number, number]): Piece[] {
   const { owner, type, position } = pieces[from];
   const piecesCopy = pieces.map(x => ({ ...x }));
   const j = pieces.findIndex(x => x.position === to)
@@ -70,18 +70,19 @@ const playMove = (pieces: Piece[], [from, to]: [number, number]): Piece[] => {
   return piecesCopy
 }
 
-const evaluatePosition = (pieces: Piece[]) => {
+function evaluatePosition(pieces: Piece[]) {
   let result = 0;
 
-  const board: number[] = new Array(12);
-  board.fill(0);
+  //const board: number[] = new Array(12);
+  //board.fill(0);
   for (const piece of pieces) {
-    result += (piece.owner ? -1 : 1) * pieceValue[piece.type];
-    if (piece.position !== null) {
-      board[piece.position] = piece.owner + 1;
-    }
+    result += (piece.owner === 0 ? 1 : -1) * (piece.position === null ? 1 : 2) * pieceValue[piece.type];
+    //if (piece.position !== null) {
+    //  board[piece.position] = piece.owner + 1;
+    //}
   }
 
+  /*
   for (let i = 0; i < 8; i++) {
     const piece = pieces[i];
 
@@ -102,10 +103,12 @@ const evaluatePosition = (pieces: Piece[]) => {
       }
     }
   }
+  */
+
   return result;
 }
 
-export const alphabeta = (depth: number, turn: 0 | 1, alpha: number, beta: number, pieces: Piece[]) => {
+export function alphabeta(depth: number, turn: 0 | 1, alpha: number, beta: number, pieces: Piece[]) {
   const moves = possibleMoves(pieces, turn);
 
   if (depth === 0) {
@@ -142,7 +145,7 @@ export const alphabeta = (depth: number, turn: 0 | 1, alpha: number, beta: numbe
   }
 }
 
-export const computerMove = (played: Piece[][], depth: number, turn: 0 | 1, pieces: Piece[]) => {
+export function computerMove(played: Piece[][], depth: number, turn: 0 | 1, pieces: Piece[]) {
   let alpha = -Infinity;
   let beta = Infinity;
 

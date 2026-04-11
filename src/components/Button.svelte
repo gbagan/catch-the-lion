@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { Snippet } from "svelte";
+
   type Props = {
     disabled?: boolean;
     onclick: () => void;
-    children: () => any;
+    children: Snippet;
   }
 
   let { disabled=false, onclick, children }: Props = $props();

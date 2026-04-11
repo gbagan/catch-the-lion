@@ -1,4 +1,4 @@
-export const countIf = <A>(xs: A[], f: (x: A) => boolean) => {
+export function countIf<A>(xs: A[], f: (x: A) => boolean) {
   let res = 0;
   const n = xs.length;
   for (let i = 0; i < n; i++) {
@@ -20,6 +20,6 @@ export function partition<A>(xs: A[], f: (x: A) => boolean): [A[], A[]] {
   return [yes, no];
 }
 
-export const randomPick = <A>(arr: A[]): A | null => arr[Math.random() * arr.length | 0] ?? null;
+// export const sample = <A>(arr: A[]): A | null => arr[Math.random() * arr.length | 0] ?? null;
 
 export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

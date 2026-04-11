@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { VitePWA } from 'vite-plugin-pwa';
+//import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   base: "./",
   plugins: [
     svelte(),
+    /*
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
@@ -31,9 +32,11 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,webm,webp}']
+        ** todo remove space on ** /* 
+        globPatterns: ['** /*.{js,css,html,ico,png,webm,webp}']
       }
     })
+    */
   ],
   worker: {
   },

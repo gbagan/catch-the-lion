@@ -45,7 +45,7 @@ export const movesDict: Record<PieceType, [number, number][]> = ({
   L: [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]],
 });
 
-export const possibleMoves = (pieces: Piece[], piece: Piece) => {
+export function possibleMoves(pieces: Piece[], piece: Piece) {
   const board: number[] = new Array(12)
   board.fill(0);
   for (const piece2 of pieces) {
@@ -86,7 +86,7 @@ export const pieceEq = (piece1: Piece, piece2: Piece) =>
   && piece1.position === piece2.position
   && piece1.type === piece2.type;
 
-export const piecesEq = (pieces1: Piece[], pieces2: Piece[]) => {
+export function piecesEq(pieces1: Piece[], pieces2: Piece[]) {
   for (let i = 0; i < 8; i++) {
     if (!pieceEq(pieces1[i], pieces2[i])) {
       return false;
@@ -98,7 +98,7 @@ export const piecesEq = (pieces1: Piece[], pieces2: Piece[]) => {
 export const drawGame = (pieces: Piece[], played: Played) =>
   countIf(played, p => piecesEq(pieces, p.pieces)) >= 2;
 
-export const condition2Win = (pieces: Piece[], turn: 0 | 1) => {
+export function condition2Win(pieces: Piece[], turn: 0 | 1) {
   const lionPosition = pieces[turn ? 5 : 1].position;
   return lionPosition !== null
     && (turn && lionPosition > 8 || !turn && lionPosition < 3) 

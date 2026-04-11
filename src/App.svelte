@@ -8,7 +8,7 @@
   import NewGame from './components/NewGame.svelte';
   import Rules from './components/Rules.svelte';
   import Credits from './components/Credits.svelte';
-    import Button from './components/Button.svelte';
+  import Button from './components/Button.svelte';
 
   let pieces =  $state(initPieces());
   let turn: 0 | 1 = $state(0);
@@ -39,13 +39,15 @@
       worker.postMessage(data)
     });
 
-  const playAux = (from: number, to: number) => {
+  function playAux(from: number, to: number) {
     const { owner, type, position } = pieces[from];
     const fromPos = pieces[from].position;
     const piecesCopy = pieces.map(x => ({ ...x}));
     played.push({ pieces: piecesCopy, move: [fromPos, to] });
     const j = pieces.findIndex(x => x.position === to);
-    if (j >= 0) {
+    if (j == -1) {
+      moveAudio.play();
+    } else {
       captureAudio.play();
       pieces[j].position = null;
       pieces[j].owner = owner;
@@ -55,8 +57,6 @@
       if (pieces[j].type === 'L') {
         outcome = owner;
       }
-    } else {
-      moveAudio.play();
     }
     pieces[from].position = to;
     if (type === 'C' && position !== null && (owner && to > 8 || !owner && to < 3)) {
@@ -71,7 +71,7 @@
     turn = turn === 0 ? 1 : 0;
   }
 
-  const machinePlays = async () => {
+  async function machinePlays() {
     const data = {
       pieces: pieces.map(x => ({ ...x })),
       turn: turn,
@@ -83,7 +83,7 @@
     playAux(from2, to2);
   }
 
-  const play = async (from: number, to: number) => {
+  async function play(from: number, to: number) {
     if (config.adversary === 'human') {
       playAux(from, to)
     } else {
@@ -95,7 +95,7 @@
     }
   }
       
-  const undo = () => {
+  function undo() {
     if (isThinking) {
       return
     }
@@ -113,7 +113,7 @@
     }
   }
 
-  const openNewGameDialog = () => {
+  function openNewGameDialog() {
     if (isThinking) {
       return;
     }
@@ -121,22 +121,22 @@
     dialogEl.showModal();
   }
 
-  const openRulesDialog = () => {
+  function openRulesDialog() {
     dialog = "rules";
     dialogEl.showModal()
   }
 
-  const openCreditsDialog = () => {
+  function openCreditsDialog() {
     dialog = "credits";
     dialogEl.showModal();
   }
 
-  const closeDialog = () => {
+  function closeDialog() {
     dialogEl.close();
     dialog = null;
   }
 
-  const newGame = (config2: Config) => {
+  function newGame(config2: Config) {
     config = { ...config2 };
     pieces = initPieces();
     played = [];
@@ -151,7 +151,7 @@
     }
   }
 
-  const startTutorial = () => {
+  function startTutorial() {
     if (isThinking) {
       return
     }
@@ -164,7 +164,7 @@
     tutorialStep = 0;
   }
 
-  const tutorialPred = () => {
+  function tutorialPred() {
    if (tutorialStep === null) {
       return
     }
@@ -175,7 +175,7 @@
     }
   }
 
-  const tutorialNext = () => {
+  function tutorialNext() {
     if (tutorialStep === null) {
       return
     }
@@ -190,7 +190,7 @@
   }
 
 
-  const tutorialPlay = (from: number, to: number) => {
+  function tutorialPlay(from: number, to: number) {
     if (tutorialStep === null) {
       return
     }
